@@ -1,27 +1,93 @@
-# OcpInterventionFrontend
+# 🎨 Frontend – Gestion des Interventions
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
+### Angular · Angular Material · JWT Auth · Chatbot UI
 
-## Development server
+### Stage OCP (Juillet 2025 – Août 2025)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 📌 **Description du Projet**
 
-## Code scaffolding
+Cette interface web a été développée dans le cadre d’un stage de fin d’année au **Groupe OCP (Khouribga)**.
+Elle permet la **gestion complète des interventions techniques** : création, planning, suivi, techniciens, notifications, et assistance via chatbot.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Le frontend communique avec une architecture microservices Spring Boot via une **API Gateway** sécurisée (JWT).
 
-## Build
+---
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## 🖥️ **Fonctionnalités Principales**
 
-## Running unit tests
+### 🔐 **Authentification & Sécurité**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+* Login / Logout avec **JWT**
+* Intercepteur Angular pour injecter automatiquement le token
+* Garde de routes (AuthGuard)
+* Gestion des rôles (Admin / User / Technicien)
 
-## Running end-to-end tests
+### 🛠️ **Gestion des Interventions**
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+* Tableau de bord des interventions
+* Création / modification / suppression (CRUD)
+* Formulaires dynamiques Angular Reactive Forms
+* Assignation de techniciens
+* Filtrage & pagination
 
-## Further help
+### 👷 **Gestion des Techniciens**
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* Liste des techniciens
+* Affectation aux interventions
+* Profil détaillé
+
+### 🔔 **Notifications en temps réel**
+
+* Affichage des messages envoyés via RabbitMQ
+  (retransmis par le microservice Notification)
+
+### 📊 **Logs & Monitoring**
+
+* Interface de visualisation des actions historiques (MongoDB)
+
+### 🤖 **Chatbot Intelligent**
+
+* Widget intégré dans l’interface
+* Interaction directe avec le microservice Chatbot
+* Aide au diagnostic, recherche d’interventions, réponses rapides
+
+---
+
+## 📦 **Technologies Utilisées**
+
+### 🔸 Frontend
+
+* **Angular 17+**
+* **TypeScript**
+* **Angular Material**
+* **SCSS**
+
+### 🔸 Communication Backend
+
+* API REST via Gateway
+* JWT
+* Interceptor HTTP
+* Services Angular (DI)
+
+### 🔸 Tests
+
+* Jasmine / Karma
+* Postman (tests end-to-end)
+
+---
+
+
+## 📷 **UI & Expérience Utilisateur**
+
+* UI responsive (Angular Material + Flex Layout)
+* Thèmes personnalisés pour s’adapter à la charte OCP
+* Modales, tables, cards, listes, dialogues Material
+* Dashboard synthétique et ergonomique
+
+---
+
+
+## 👤 **Auteur**
+
+**Ismail – Stagiaire Ingénieur Génie Informatique**
+**Groupe OCP, Khouribga – Stage Juillet/Août 2025**
