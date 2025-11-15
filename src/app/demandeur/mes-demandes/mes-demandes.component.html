@@ -1,0 +1,282 @@
+<div class="dashboard-container">
+    <app-header-dem></app-header-dem>
+  
+    <main class="main-content">
+      <!-- En-tête -->
+      <section class="page-header">
+        <div class="page-title-section">
+          <div class="page-icon">
+            <mat-icon>list_alt</mat-icon>
+          </div>
+          <div class="page-info">
+            <h1 class="page-title">Vos demandes</h1>
+            <p class="page-description">Historique complet de vos demandes d'intervention</p>
+          </div>
+        </div>
+  
+        <!-- Filtres -->
+        <div class="search-filters">
+          <div class="search-input-container">
+            <input 
+              type="text" 
+              class="search-input" 
+              [(ngModel)]="searchTerm"
+              placeholder="Rechercher une demande..."
+              (input)="filterDemandes()"
+            >
+            <mat-icon>search</mat-icon>
+          </div>
+          
+          <div class="filter-group">
+            <select [(ngModel)]="selectedFilter" (change)="filterDemandes()">
+              <option value="tous">Toutes les demandes</option>
+              <option value="en-attente">En attente</option>
+              <option value="en-cours">En cours</option>
+              <option value="termine">Terminées</option>
+              <option value="annule">Annulées</option>
+            </select>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+  
+          <button class="btn btn-primary" (click)="showAddForm = !showAddForm">
+            <mat-icon>add</mat-icon> Nouvelle Demande
+          </button>
+        </div>
+      </section>
+  
+      <!-- Tableau des demandes -->
+      <div class="table-container">
+        <table class="demandes-table">
+          <thead>
+            <tr>
+              <th (click)="sortDemandes('id')">
+                <span>ID</span>
+                <mat-icon *ngIf="sortColumn === 'id'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
+              </th>
+              <th (click)="sortDemandes('titre')">
+                <span>Titre</span>
+                <mat-icon *ngIf="sortColumn === 'titre'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
+              </th>
+              <th>Lieu</th>
+              <th (click)="sortDemandes('dateDemande')">
+                <span>Date</span>
+                <mat-icon *ngIf="sortColumn === 'dateDemande'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
+              </th>
+              <th (click)="sortDemandes('priorite')">
+                <span>Priorité</span>
+                <mat-icon *ngIf="sortColumn === 'priorite'">
+                  {{ sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
+              </th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let demande of paginatedDemandes" 
+                [class.priority-high]="demande.priorite === 'HAUTE'"
+                [class.priority-urgent]="demande.priorite === 'URGENT'">
+              <td>{{ demande.id }}</td>
+              <td class="demande-title">{{ demande.titre }}</td>
+              <td>{{ demande.lieu }}</td>
+              <td>{{ demande.dateDemande | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="priority-badge" [style.background]="getPriorityColor(demande.priorite)">
+                  {{ demande.priorite }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="demande.statut.toLowerCase()">
+                  {{ getStatusLabel(demande.statut) }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button mat-icon-button (click)="viewDemandeDetails(demande.id)" matTooltip="Voir les détails">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        *ngIf="demande.statut === 'EN_ATTENTE'" 
+                        (click)="editDemande(demande.id)"
+                        matTooltip="Modifier">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button 
+                        *ngIf="demande.statut === 'EN_ATTENTE'" 
+                        (click)="cancelDemande(demande.id)"
+                        matTooltip="Annuler">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredDemandes.length === 0">
+              <td colspan="7" class="no-results">Aucune demande trouvée</td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- Pagination -->
+        <div class="pagination" *ngIf="filteredDemandes.length > 0">
+          <button mat-icon-button (click)="previousPage()" [disabled]="currentPage === 1">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+          <button mat-icon-button (click)="nextPage()" [disabled]="currentPage === totalPages">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+     <!-- Formulaire Détail & Modification -->
+<section *ngIf="showDetailForm || showEditForm" class="overlay">
+  <div class="modal-card">
+    <h2 class="form-title">
+      <mat-icon class="form-icon">{{ showEditForm ? 'edit' : 'visibility' }}</mat-icon>
+      {{ showEditForm ? 'Modifier la demande' : 'Détails de la demande' }}
+    </h2>
+
+    <!-- Formulaire de modification -->
+    <form *ngIf="showEditForm" (submit)="submitEditDemande()" class="form-grid">
+      <div class="form-group">
+        <label for="titre">Titre</label>
+        <input type="text" id="titre" [(ngModel)]="selectedDemande.titre" name="titre" required />
+      </div>
+
+      <div class="form-group">
+  <label for="equipement">Équipement concerné</label>
+  <select id="equipement" [(ngModel)]="selectedDemande.equipementId" name="equipementId" required>
+    <option *ngFor="let eq of equipements" [value]="eq.id">
+      {{ eq.nom }} - {{ eq.modele }}
+    </option>
+  </select>
+</div>
+
+      <div class="form-group">
+  <label for="lieu">Lieu</label>
+  <select id="lieu" [(ngModel)]="selectedDemande.lieu" name="lieu" required>
+    <option *ngFor="let eq of equipements" [value]="eq.localisation">
+      {{ eq.localisation }}
+    </option>
+  </select>
+</div>
+
+      <div class="form-group full-width">
+        <label for="description">Description</label>
+        <textarea id="description" [(ngModel)]="selectedDemande.description" name="description" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="priorite">Priorité</label>
+        <select id="priorite" [(ngModel)]="selectedDemande.priorite" name="priorite" required>
+          <option value="BASSE">Basse</option>
+          <option value="MOYENNE">Moyenne</option>
+          <option value="ELEVEE">Élevée</option>
+          <option value="URGENTE">Urgente</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="niveau">Niveau d'intervention</label>
+        <select id="niveau" [(ngModel)]="selectedDemande.niveauIntervention" name="niveau" required>
+          <option value="NIVEAU_1">Niveau 1</option>
+          <option value="NIVEAU_2">Niveau 2</option>
+          <option value="NIVEAU_3">Niveau 3</option>
+        </select>
+      </div>
+
+      <div class="form-actions full-width">
+        <button type="button" class="btn btn-secondary" (click)="closeForm()">Annuler</button>
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+      </div>
+    </form>
+
+    <!-- Affichage des détails -->
+    <div *ngIf="showDetailForm" class="detail-view">
+      <p><strong>ID :</strong> {{ selectedDemande.id }}</p>
+      <p><strong>Titre :</strong> {{ selectedDemande.titre }}</p>
+      <p><strong>Lieu :</strong> {{ selectedDemande.lieu }}</p>
+      <p><strong>Description :</strong> {{ selectedDemande.description }}</p>
+      <p><strong>Date de la demande :</strong> {{ selectedDemande.dateDemande | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Priorité :</strong> {{ selectedDemande.priorite }}</p>
+      <p><strong>Niveau d'intervention :</strong> {{ selectedDemande.niveauIntervention }}</p>
+      <p><strong>Statut :</strong> {{ selectedDemande.statut }}</p>
+
+      <div class="form-actions">
+        <button class="btn btn-secondary" (click)="closeForm()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Formulaire d'ajout -->
+      <section class="add-form-section" *ngIf="showAddForm" class="overlay">
+        <div class="form-container modal-card">
+          <h2><mat-icon>edit</mat-icon> Nouvelle demande d'intervention</h2>
+          
+          <form (submit)="submitNewDemande()" class="demande-form">
+            <div class="form-group">
+              <label for="titre">Titre de la demande</label>
+              <input type="text" id="titre" [(ngModel)]="newDemande.titre" name="titre" required>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="lieu">Lieu</label>
+                <select id="equipement" [(ngModel)]="newDemande.lieu" name="equipement" required>
+                    <option *ngFor="let eq of equipements" [value]="eq.localisation">
+                         {{ eq.localisation }}
+                    </option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="equipement">Équipement concerné</label>
+               <select id="equipement" [(ngModel)]="newDemande.equipementId" name="equipement" required>
+                    <option *ngFor="let eq of equipements" [value]="eq.id">
+                         {{ eq.nom }} - {{ eq.modele }}
+                     </option>
+              </select>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="priorite">Priorité</label>
+                <select id="priorite" [(ngModel)]="newDemande.priorite" name="priorite" required>
+  <option value="BASSE">Basse</option>
+  <option value="MOYENNE">Moyenne</option>
+  <option value="ELEVEE">Élevée</option>
+  <option value="URGENTE">Urgente</option>
+</select>
+
+              </div>
+              
+              <div class="form-group">
+                <label for="niveau">Niveau d'intervention</label>
+                <select id="niveau" [(ngModel)]="newDemande.niveauIntervention" name="niveau" required>
+                  <option value="NIVEAU_1">Niveau 1</option>
+                  <option value="NIVEAU_2">Niveau 2</option>
+                  <option value="NIVEAU_3">Niveau 3</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Description détaillée</label>
+              <textarea id="description" [(ngModel)]="newDemande.description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="cancelAddForm()">Annuler</button>
+              <button type="submit" class="btn btn-primary">Soumettre la demande</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>

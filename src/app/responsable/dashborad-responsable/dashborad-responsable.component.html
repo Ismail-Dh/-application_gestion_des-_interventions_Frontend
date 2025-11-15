@@ -1,0 +1,68 @@
+<div class="dashboard-container">
+  <app-header-resp></app-header-resp>
+
+  <main class="main-content">
+    <!-- En-tête holographique -->
+    <section class="page-header">
+      <div class="page-title-section">
+        <div class="page-icon">
+          <mat-icon>dashboard</mat-icon>
+        </div>
+        <div class="page-info">
+          <h1 class="page-title">Tableau de Bord Responsable</h1>
+          <p class="page-description">Vue d'ensemble des opérations techniques</p>
+        </div>
+      </div>
+
+      <!-- Filtres futuristes -->
+      <div class="search-filters">
+
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon> Réinitialiser
+        </button>
+      </div>
+    </section>
+
+ 
+
+    <!-- Cartes de statistiques -->
+    <div class="stats-grid">
+      <div class="stat-card stat-interventions">
+        <div class="stat-icon">
+          <mat-icon>build</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>Interventions</h3>
+          <p class="stat-value">{{ stats.interventions }}</p>
+         
+        </div>
+      </div>
+
+      <div class="stat-card stat-demandes">
+        <div class="stat-icon">
+          <mat-icon>assignment</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>Demandes</h3>
+          <p class="stat-value">{{ stats.totalDemandes }}</p>
+          
+        </div>
+      </div>
+
+      
+    </div>
+<div class="dashboard-container1">
+  <div class="stat-card" *ngFor="let item of [
+    {label: 'Planifiées', value: stats.planifiees, color: '#42a5f5'},
+    {label: 'En cours', value: stats.enCours, color: '#ffb300'},
+    {label: 'Terminées', value: stats.terminees, color: '#66bb6a'},
+    {label: 'Escaladées', value: stats.escaladees, color: '#ef5350'},
+  ]" [style.background]="item.color">
+    <div class="stat-title">{{item.label}}</div>
+    <div class="stat-value">{{item.value}}</div>
+  </div>
+</div>
+
+    
+  </main>
+</div>

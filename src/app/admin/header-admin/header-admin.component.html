@@ -1,0 +1,60 @@
+<div class="header-admin">
+  <header class="dashboard-header">
+    <div class="header-container">
+      <!-- Logo et badge ADMIN -->
+      <div class="logo-wrapper">
+        <div class="logo-gradient">
+          <img src="assets/ocp.png" alt="OCP Logo" class="ocp-logo">
+        </div>
+     
+      </div>
+
+      <!-- Navigation centrale -->
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="admin/dashboard" class="active">Accueil</a></li>
+          <li><a href="admin/utilisateurs-admin">Utilisateurs</a></li>
+          <li><a href="admin/equipements-admin">Equipements</a></li>
+          <li><a href="admin/interventions">Interventions</a></li>
+           <li><a href="admin/rapports">Rapports</a></li>
+          <li><a href="admin/statistiques">Statistiques</a></li>
+        </ul>
+      </nav>
+
+      <!-- Panneau utilisateur avec menu intégré -->
+      <div class="user-panel">
+       
+
+<!-- Profil utilisateur avec menu déroulant (trigger) -->
+<button mat-button class="user-profile" [matMenuTriggerFor]="userMenu">
+  <span class="user-avatar">
+    <mat-icon>account_circle</mat-icon>
+    <span class="online-status"></span>
+  </span>
+  <span class="user-info">
+    <span class="user-name">Admin OCP</span>
+    <span class="user-role">Super Administrateur</span>
+  </span>
+  <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+</button>
+
+<!-- Menu utilisateur -->
+<mat-menu #userMenu="matMenu" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon>
+    <span>Mon Profil</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    <span>Paramètres</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon class="logout-icon">power_settings_new</mat-icon>
+    <span>Déconnexion</span>
+  </button>
+</mat-menu>
+      </div>
+    </div>
+  </header>
+</div>

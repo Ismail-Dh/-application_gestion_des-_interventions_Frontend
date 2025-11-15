@@ -1,0 +1,866 @@
+@use "sass:color";
+@use "sass:math";
+
+/* Variables */
+$primary-color: #00f0ff;
+$secondary-color: #ff00f0;
+$dark-bg: #15463f;
+$darker-bg: #66c89f;
+$dark-color: #14213d;
+$glass-bg: rgba(81, 184, 186, 0.7);
+$success-color: #00ff9d;
+$warning-color: #ffcc00;
+$error-color: #ff3d71;
+$info-color: #2e977f;
+
+$font-main: 'Rajdhani', 'Segoe UI', sans-serif;
+$font-tech: 'Share Tech Mono', monospace;
+
+$border-radius: 8px;
+$transition: all 0.3s ease;
+$shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 5px 15px rgba(0, 0, 0, 0.2);
+$shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.3);
+
+/* Mixins */
+@mixin glow-effect($color) {
+  text-shadow: 0 0 10px $color, 0 0 20px rgba($color, 0.5);
+  box-shadow: 0 0 15px $color, 0 0 30px rgba($color, 0.3);
+}
+
+@mixin floating-animation {
+  animation: floating 3s ease-in-out infinite alternate;
+}
+
+@mixin pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+@mixin glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+}
+
+@mixin floating-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Animations */
+@keyframes floating {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes rotate-gradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Styles du composant */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  //font-family: $font-main;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+
+  /* Rotation en arrière-plan */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(67, 97, 238, 0.05) 0%, transparent 70%);
+    animation: rotate-gradient 20s linear infinite;
+    z-index: 0;
+  }
+
+  .main-content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+
+    .page-header {
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      @include glass-morphism;
+      padding: 1.5rem;
+
+      /* Deuxième couche de rotation pour l'en-tête */
+      &::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
+        animation: rotate-gradient 15s linear infinite reverse;
+      }
+
+      .page-title-section {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1rem;
+
+        .page-icon {
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 2rem;
+          background: linear-gradient(135deg, $primary-color, $secondary-color);
+          @include glow-effect($primary-color);
+        }
+
+        .page-info {
+          .page-title {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, $primary-color, $secondary-color);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+
+          .page-description {
+            margin: 0.5rem 0 0;
+            color: rgba($dark-color, 0.7);
+            font-size: 1.1rem;
+          }
+        }
+      }
+
+      .search-filters {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        gap: 1rem;
+        padding: 0 2rem 2rem;
+        flex-wrap: wrap;
+
+        .search-input-container {
+          flex: 1;
+          min-width: 300px;
+          position: relative;
+          @include glass-morphism;
+
+          .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: none;
+            background: transparent;
+            color: $dark-color;
+            font-size: 1rem;
+            border-radius: 12px;
+
+            &:focus {
+              outline: none;
+              box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+            }
+
+            &::placeholder {
+              color: rgba($dark-color, 0.5);
+            }
+          }
+
+          &::before {
+            content: '🔍';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+        }
+
+        .filter-group {
+          position: relative;
+          @include glass-morphism;
+          border-radius: $border-radius;
+
+          select {
+            padding: 1rem 2.5rem 1rem 1rem;
+            border: none;
+            background: transparent;
+            appearance: none;
+            cursor: pointer;
+            min-width: 180px;
+            color: $dark-color;
+            font-size: 0.95rem;
+
+            &:focus {
+              outline: none;
+              box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+            }
+          }
+
+          &::after {
+            content: '▼';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: $primary-color;
+            pointer-events: none;
+          }
+        }
+
+        .btn {
+          padding: 1rem 1.5rem;
+          border: none;
+          border-radius: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: $transition;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          @include glass-morphism;
+
+          &.btn-secondary {
+            background: rgba($primary-color, 0.1);
+            color: $primary-color;
+
+            &:hover {
+              background: rgba($primary-color, 0.2);
+              transform: translateY(-2px);
+            }
+          }
+
+          mat-icon {
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+
+    .user-cards {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.5rem;
+      perspective: 1000px;
+      position: relative;
+      z-index: 1;
+    
+      .demande-card {
+        @include glass-morphism;
+        @include floating-card;
+        padding: 1.5rem;
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        transform-style: preserve-3d;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 5px;
+        }
+
+        &.priority-high::before {
+          background: linear-gradient(90deg, $error-color, $warning-color);
+        }
+
+        &.priority-medium::before {
+          background: linear-gradient(90deg, $warning-color, $primary-color);
+        }
+
+        &.priority-low::before {
+          background: linear-gradient(90deg, $success-color, $info-color);
+        }
+
+        .user-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+
+          .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, $primary-color, $secondary-color);
+            @include glow-effect($primary-color);
+          }
+
+          .user-info {
+            flex: 1;
+
+            h3 {
+              margin: 0;
+              font-size: 1.2rem;
+              color: $dark-color;
+            }
+
+            .user-email {
+              color: rgba($dark-color, 0.6);
+              font-size: 0.85rem;
+              margin-top: 0.2rem;
+            }
+          }
+
+          .user-status {
+            .status-badge {
+              padding: 0.3rem 0.8rem;
+              border-radius: 20px;
+              font-size: 0.75rem;
+              font-weight: 600;
+
+              &.priority-haute {
+                background: rgba($error-color, 0.1);
+                color: $error-color;
+                @include glow-effect($error-color);
+              }
+
+              &.priority-moyenne {
+                background: rgba($warning-color, 0.1);
+                color: $warning-color;
+                @include glow-effect($warning-color);
+              }
+
+              &.priority-basse {
+                background: rgba($success-color, 0.1);
+                color: $success-color;
+                @include glow-effect($success-color);
+              }
+            }
+          }
+        }
+
+        .user-details {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+
+          .detail-item {
+            .label {
+              font-size: 0.75rem;
+              color: rgba($dark-color, 0.5);
+              margin-bottom: 0.2rem;
+            }
+
+            .value {
+              font-weight: 600;
+              color: $dark-color;
+              font-size: 0.9rem;
+            }
+          }
+        }
+
+        .user-actions {
+          display: flex;
+          gap: 0.5rem;
+
+          .action-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: $transition;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            justify-content: center;
+
+            &.accept {
+              background: rgba($success-color, 0.1);
+              color: $success-color;
+
+              &:hover {
+                background: rgba($success-color, 0.2);
+                transform: translateY(-2px);
+                @include glow-effect($success-color);
+              }
+            }
+
+            &.reject {
+              background: rgba($error-color, 0.1);
+              color: $error-color;
+
+              &:hover {
+                background: rgba($error-color, 0.2);
+                transform: translateY(-2px);
+                @include glow-effect($error-color);
+              }
+            }
+          }
+        }
+      }
+
+      .no-demands {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem;
+        color: rgba($dark-color, 0.6);
+        @include glass-morphism;
+        border-radius: $border-radius;
+        
+        mat-icon {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          color: rgba($dark-color, 0.3);
+        }
+        
+        p {
+          font-size: 1.2rem;
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+
+  .modal-container {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+    box-shadow: $shadow-lg;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
+      animation: rotate-gradient 20s linear infinite;
+      z-index: 0;
+    }
+
+    .modal-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(5px);
+
+      h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: $dark-color;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      button {
+        color: rgba($dark-color, 0.5);
+        transition: $transition;
+
+        &:hover {
+          color: $error-color;
+        }
+      }
+    }
+
+    .modal-content {
+      position: relative;
+      z-index: 1;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+/* Accept form styles */
+.accept-form-container {
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  @include glass-morphism;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, $success-color, $info-color);
+  }
+
+  /* Rotation en arrière-plan pour le formulaire */
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(67, 97, 238, 0.05) 0%, transparent 70%);
+    animation: rotate-gradient 25s linear infinite reverse;
+    z-index: 0;
+  }
+
+  .form-header {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 2rem;
+    text-align: center;
+
+    h2 {
+      font-size: 1.8rem;
+      color: $dark-color;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    p {
+      color: rgba($dark-color, 0.7);
+      font-size: 1rem;
+    }
+  }
+
+  .form-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        font-size: 0.9rem;
+        color: $dark-color;
+        font-weight: 600;
+      }
+
+      .form-control {
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba($dark-color, 0.1);
+        font-family: $font-main;
+        transition: $transition;
+        background-color: rgba($dark-color, 0.03);
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+
+        &.textarea {
+          min-height: 120px;
+          resize: vertical;
+        }
+      }
+
+      .technicien-select {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba($dark-color, 0.1);
+        background-color: rgba($dark-color, 0.03);
+        cursor: pointer;
+        transition: $transition;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+      }
+    }
+
+    .priority-indicator {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: rgba($info-color, 0.05);
+      border-left: 4px solid $info-color;
+
+      .priority-label {
+        font-weight: 600;
+        color: $dark-color;
+      }
+
+      .priority-value {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+
+        &.priority-haute {
+          background: rgba($error-color, 0.1);
+          color: $error-color;
+          @include glow-effect($error-color);
+        }
+
+        &.priority-moyenne {
+          background: rgba($warning-color, 0.1);
+          color: $warning-color;
+          @include glow-effect($warning-color);
+        }
+
+        &.priority-basse {
+          background: rgba($success-color, 0.1);
+          color: $success-color;
+          @include glow-effect($success-color);
+        }
+      }
+    }
+
+    .date-selection {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .date-input {
+        flex: 1;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba($dark-color, 0.1);
+        background-color: rgba($dark-color, 0.03);
+        transition: $transition;
+
+        &:focus {
+          outline: none;
+          border-color: $primary-color;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+        }
+      }
+    }
+  }
+
+  .form-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba($dark-color, 0.1);
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: $transition;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &.btn-cancel {
+        background: rgba($dark-color, 0.05);
+        color: rgba($dark-color, 0.8);
+        border: 1px solid rgba($dark-color, 0.1);
+
+        &:hover {
+          background: rgba($dark-color, 0.1);
+          transform: translateY(-2px);
+        }
+      }
+
+      &.btn-submit {
+        background: linear-gradient(135deg, $success-color, darken($success-color, 10%));
+        color: white;
+        border: none;
+        @include glow-effect($success-color);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba($success-color, 0.4);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+        }
+      }
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem !important;
+  }
+
+  .user-cards {
+    grid-template-columns: 1fr !important;
+  }
+
+  .search-filters {
+    flex-direction: column;
+    
+    .search-input-container,
+    .filter-group,
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .modal-overlay {
+    .modal-container {
+      width: 95%;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+* {
+  box-sizing: border-box;
+}
+// Système d'onglets holographiques
+.user-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba($primary-color, 0.1);
+  }
+
+  .tab {
+    padding: 1rem 2rem;
+    border: none;
+    background: transparent;
+    color: rgba($dark-color, 0.6);
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+
+    &.active {
+      color: $primary-color;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: $primary-color;
+        z-index: 1;
+      }
+    }
+
+    .badge {
+      margin-left: 0.5rem;
+      background: rgba($primary-color, 0.1);
+      color: $primary-color;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.7rem;
+    }
+  }
+}
+.user-card-header{
+ 
+  display: flex;
+  
+}

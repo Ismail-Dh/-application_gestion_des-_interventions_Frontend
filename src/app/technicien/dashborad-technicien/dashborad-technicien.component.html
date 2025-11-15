@@ -1,0 +1,53 @@
+<div class="dashboard-container">
+  <app-header-tech></app-header-tech>
+
+  <main class="main-content">
+    <!-- En-tête -->
+    <section class="page-header">
+      <div class="page-title-section">
+        <div class="page-icon">
+          <mat-icon>dashboard</mat-icon>
+        </div>
+        <div class="page-info">
+          <h1 class="page-title">Tableau de Bord Technicien</h1>
+          <p class="page-description">Vue d'ensemble des opérations techniques</p>
+        </div>
+      </div>
+
+      <!-- Filtres -->
+      <div class="search-filters">
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          <mat-icon>refresh</mat-icon> Réinitialiser
+        </button>
+      </div>
+    </section>
+
+    <!-- Calendrier custom -->
+    <section class="calendar-section">
+      <h2>Calendrier des Interventions</h2>
+
+      <div class="calendar-header">
+        <button (click)="previousMonth()">⬅️</button>
+        <span>{{ currentMonth }} {{ currentYear }}</span>
+        <button (click)="nextMonth()">➡️</button>
+      </div>
+
+      <div class="calendar-grid">
+        <div class="calendar-day" *ngFor="let day of days">
+          <span>{{ day.date.getDate() }}</span>
+
+          <!-- Vérifier s’il y a intervention ce jour -->
+          <div
+            *ngFor="let event of events"
+            class="event"
+            [ngClass]="{ highlight: isSameDate(day.date, event.start) }"
+          >
+            <span *ngIf="isSameDate(day.date, event.start)">
+              Intervention #{{ event.title }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

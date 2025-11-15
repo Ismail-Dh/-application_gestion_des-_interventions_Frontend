@@ -1,0 +1,641 @@
+// Variables modernes
+$primary-color: #4361ee;
+$secondary-color: #3a0ca3;
+$accent-color: #4cc9f0;
+$success-color: #2ec4b6;
+$warning-color: #ff9f1c;
+$danger-color: #e71d36;
+$dark-color: #14213d;
+$light-color: #f8f9fa;
+$glass-bg: rgba(255, 255, 255, 0.2);
+$glass-border: 1px solid rgba(255, 255, 255, 0.3);
+$neon-shadow: 0 0 10px rgba(67, 97, 238, 0.5);
+
+// Mixins avancés
+@mixin glass-morphism {
+  background: $glass-bg;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 12px;
+  border: $glass-border;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+@mixin floating-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@mixin neon-effect {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    box-shadow: $neon-shadow;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+.utilisateurs-admin {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+// Header futuriste
+.header-admin {
+  @include glass-morphism;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+// Contenu principal
+.main-content {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+// En-tête de page holographique
+.page-header {
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  @include glass-morphism;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(67, 97, 238, 0.1) 0%, transparent 70%);
+    animation: rotate-gradient 20s linear infinite;
+  }
+
+  .page-title-section {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+
+    .page-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, $primary-color, $secondary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      @include neon-effect;
+    }
+
+    .page-info {
+      .page-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .page-description {
+        font-size: 1.1rem;
+        color: rgba($dark-color, 0.7);
+        margin-top: 0.5rem;
+      }
+    }
+  }
+
+  // Filtres futuristes
+  .search-filters {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 1rem;
+    padding: 0 2rem 2rem;
+    flex-wrap: wrap;
+
+    .search-input-container {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+      @include glass-morphism;
+
+      .search-input {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: none;
+        background: transparent;
+        color: $dark-color;
+        font-size: 1rem;
+        border-radius: 12px;
+
+        &::placeholder {
+          color: rgba($dark-color, 0.5);
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      &::before {
+        content: '\f002';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $primary-color;
+      }
+    }
+
+    .filter-group {
+      position: relative;
+      @include glass-morphism;
+
+      select {
+        padding: 1rem 2.5rem 1rem 1rem;
+        border: none;
+        background: transparent;
+        appearance: none;
+        cursor: pointer;
+        min-width: 180px;
+        color: $dark-color;
+        font-size: 0.95rem;
+      }
+
+      &::after {
+        content: '\f078';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $primary-color;
+        pointer-events: none;
+      }
+    }
+
+    .btn {
+      padding: 1rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &.btn-secondary {
+        background: rgba($dark-color, 0.1);
+        color: $dark-color;
+
+        &:hover {
+          background: rgba($dark-color, 0.2);
+        }
+      }
+
+      &.btn-primary {
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        color: white;
+        @include neon-effect;
+
+        &:hover {
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
+
+// Système d'onglets holographiques
+.user-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba($primary-color, 0.1);
+  }
+
+  .tab {
+    padding: 1rem 2rem;
+    border: none;
+    background: transparent;
+    color: rgba($dark-color, 0.6);
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+
+    &.active {
+      color: $primary-color;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: $primary-color;
+        z-index: 1;
+      }
+    }
+
+    .badge {
+      margin-left: 0.5rem;
+      background: rgba($primary-color, 0.1);
+      color: $primary-color;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.7rem;
+    }
+  }
+}
+
+// Cartes utilisateurs en 3D
+.user-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  //grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+
+  gap: 1.5rem;
+  perspective: 1000px;
+  display: grid;
+  
+ 
+  .user-card {
+    @include glass-morphism;
+    @include floating-card;
+    padding: 1.5rem;
+    border-radius: 16px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, $primary-color, $accent-color);
+    }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .user-info {
+        flex: 1;
+
+        h3 {
+          margin: 0;
+          font-size: 1.2rem;
+          color: $dark-color;
+        }
+
+        .user-email {
+          color: rgba($dark-color, 0.6);
+          font-size: 0.85rem;
+          margin-top: 0.2rem;
+        }
+      }
+
+      .user-status {
+        .status-badge {
+          padding: 0.3rem 0.8rem;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 600;
+
+          &.active {
+            background: rgba($success-color, 0.1);
+            color: $success-color;
+          }
+
+          &.inactive {
+            background: rgba($danger-color, 0.1);
+            color: $danger-color;
+          }
+        }
+      }
+    }
+
+    .user-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .detail-item {
+        .label {
+          font-size: 0.75rem;
+          color: rgba($dark-color, 0.5);
+          margin-bottom: 0.2rem;
+        }
+
+        .value {
+          font-weight: 600;
+          color: $dark-color;
+        }
+      }
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 0.5rem;
+
+      .action-btn {
+        padding: 0.6rem 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &.edit {
+          background: rgba($primary-color, 0.1);
+          color: $primary-color;
+
+          &:hover {
+            background: rgba($primary-color, 0.2);
+          }
+        }
+
+        &.delete {
+          background: rgba($danger-color, 0.1);
+          color: $danger-color;
+
+          &:hover {
+            background: rgba($danger-color, 0.2);
+          }
+        }
+
+        &.level {
+          background: rgba($warning-color, 0.1);
+          color: $warning-color;
+
+          &:hover {
+            background: rgba($warning-color, 0.2);
+          }
+        }
+      }
+    }
+
+    // Effet spécial pour les techniciens
+    &.tech-card {
+      &::before {
+        background: linear-gradient(90deg, $accent-color, $success-color);
+      }
+
+      .tech-level {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+
+        &.level-1 {
+          background: rgba($warning-color, 0.1);
+          color: $warning-color;
+        }
+
+        &.level-2 {
+          background: rgba($primary-color, 0.1);
+          color: $primary-color;
+        }
+
+        &.level-3 {
+          background: rgba($success-color, 0.1);
+          color: $success-color;
+        }
+      }
+    }
+
+    // Effet spécial pour les responsables
+    &.admin-card {
+      &::before {
+        background: linear-gradient(90deg, $secondary-color, #7209b7);
+      }
+
+      .admin-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, $secondary-color, #7209b7);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
+
+// Bouton flottant futuriste
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $primary-color, $secondary-color);
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(67, 97, 238, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  @include neon-effect;
+
+  &:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.6);
+  }
+}
+
+// Animations
+@keyframes rotate-gradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .user-cards {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .search-filters {
+    flex-direction: column;
+
+    .search-input-container,
+    .filter-group,
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .user-tabs {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* filepath: src/app/admin/utilisateurs-admin/utilisateurs-admin.component.scss */
+.add-user-form {
+  background: #181f2a;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 2rem 2.5rem;
+  max-width: 420px;
+  margin: 2rem auto;
+  color: #fff;
+  position: relative;
+  z-index: 10;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #00e6d0;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"] {
+    background: #232c3d;
+    border: 1px solid #2e3a4e;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  input:focus {
+    border-color: #00e6d0;
+  }
+
+  button[type="submit"] {
+    background: linear-gradient(90deg, #00e6d0 0%, #007cf0 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button[type="submit"]:hover {
+    background: linear-gradient(90deg, #007cf0 0%, #00e6d0 100%);
+  }
+
+  button[type="button"] {
+    background: #232c3d;
+    color: #fff;
+    border: 1px solid #2e3a4e;
+    border-radius: 8px;
+    padding: 0.7rem 0;
+    font-size: 1rem;
+    margin-top: 0.2rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  button[type="button"]:hover {
+    background: #2e3a4e;
+  }
+}

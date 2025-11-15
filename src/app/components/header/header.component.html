@@ -1,0 +1,20 @@
+<header class="header">
+  <div class="logo-section">
+    <img src="assets/ocp.png" alt="OCP Logo" class="logo" />
+  </div>
+
+  <nav class="nav">
+    <button class="menu-icon" (click)="toggleMenu()">☰</button>
+
+    <ul [class.active]="menuOpen">
+      <li><a routerLink="/">Accueil</a></li>
+      <li><a routerLink="/about">À propos</a></li>
+      <li><a routerLink="/services">Services</a></li>
+      <li><a routerLink="/chat">Chat</a></li>
+      <li><a routerLink="/contact">Contact</a></li>
+    </ul>
+
+    <button class="login-btn" routerLink="/login">Se connecter</button>
+  </nav>
+</header>
+

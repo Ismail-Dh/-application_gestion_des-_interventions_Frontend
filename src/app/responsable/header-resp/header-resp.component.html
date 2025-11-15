@@ -1,0 +1,80 @@
+<div class="header-admin">
+  <header class="dashboard-header">
+    <div class="header-container">
+      <!-- Logo et badge ADMIN -->
+      <div class="logo-wrapper">
+        <div class="logo-gradient">
+          <img src="assets/ocp.png" alt="OCP Logo" class="ocp-logo">
+        </div>
+     
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a routerLink="/responsable/dashboard" routerLinkActive="active">Accueil</a></li>
+          <li><a routerLink="/responsable/demandes" routerLinkActive="active">Demandes</a></li>
+          <li><a routerLink="/responsable/interventions" routerLinkActive="active">Interventions</a></li>
+          <li><a routerLink="/responsable/rapports" routerLinkActive="active">Rapports</a></li>
+        </ul>
+      </nav>
+       <!-- Panneau utilisateur avec menu intégré -->
+      <div class="user-panel">
+        <!-- Bouton notifications -->
+           <button mat-icon-button [matMenuTriggerFor]="notifMenu" class="notification-btn" aria-label="Notifications">
+  <mat-icon matBadge="{{unreadCount}}" matBadgeColor="warn">notifications</mat-icon>
+</button>
+
+<mat-menu #notifMenu="matMenu" class="notification-menu">
+  <div class="notif-header">
+    <span>Notifications</span>
+    <button mat-button (click)="markAllAsRead()" *ngIf="unreadCount > 0">Tout marquer lu</button>
+  </div>
+
+  <ng-container *ngIf="notifications.length > 0; else noNotif">
+    <button mat-menu-item *ngFor="let notif of notifications" (click)="markAsRead(notif)">
+      <div class="notif-title">
+        {{ notif.title }}
+        <span *ngIf="!notif.read" class="unread-dot"></span>
+      </div>
+      <div class="notif-message">{{ notif.message }}</div>
+      <div class="notif-date">{{ notif.createdAt | date:'short' }}</div>
+    </button>
+  </ng-container>
+
+  <ng-template #noNotif>
+    <span class="no-notif">Aucune notification</span>
+  </ng-template>
+</mat-menu>
+
+<!-- Profil utilisateur avec menu déroulant (trigger) -->
+<button mat-button class="user-profile" [matMenuTriggerFor]="userMenu">
+  <span class="user-avatar">
+    <mat-icon>account_circle</mat-icon>
+    <span class="online-status"></span>
+  </span>
+  <span class="user-info">
+    <span class="user-name">Responsable OCP</span>
+    <span class="user-role">Responsable</span>
+  </span>
+  <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+</button>
+
+<!-- Menu utilisateur -->
+<mat-menu #userMenu="matMenu" yPosition="below">
+  <button mat-menu-item>
+    <mat-icon>person</mat-icon>
+    <span>Mon Profil</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>settings</mat-icon>
+    <span>Paramètres</span>
+  </button>
+  <mat-divider></mat-divider>
+  <button mat-menu-item (click)="logout()">
+    <mat-icon class="logout-icon">power_settings_new</mat-icon>
+    <span>Déconnexion</span>
+  </button>
+</mat-menu>
+      </div>
+    </div>
+  </header>
+</div>

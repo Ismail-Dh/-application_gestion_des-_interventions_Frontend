@@ -1,0 +1,94 @@
+<div class="quantum-login">
+  <!-- Effets 3D -->
+  <div class="quantum-tunnel">
+    <div class="tunnel-layer" *ngFor="let layer of tunnelLayers"></div>
+  </div>
+  
+  <!-- Hologramme OCP -->
+  <div class="ocp-hologram" [class.active]="hologramActive">
+    <img src="assets/ocp.png" alt="OCP" class="hologram-logo">
+    <div class="hologram-grid"></div>
+    <div class="hologram-pulse"></div>
+  </div>
+
+  <!-- Carte de Login -->
+  <div class="cyber-card">
+    <div class="card-header">
+      <div class="ocp-logo-circle">
+        <div class="logo-container">
+          <img src="assets/ocp.png" alt="OCP" class="logo-image">
+          <div class="circle-pulse"></div>
+          <div class="circle-glow"></div>
+        </div>
+      </div>
+      <h1 class="cyber-title">
+        <span class="title-glitch">BIENVENUE</span>
+      </h1>
+    </div>
+
+    <form class="cyber-form" (ngSubmit)="onSubmit()">
+      <!-- Champ Matricule -->
+      <div class="neuro-input" [class.active]="matriculeFocused">
+        <div class="input-icon">
+          <i class="fas fa-id-badge"></i>
+        </div>
+        <input 
+          type="text" 
+          [(ngModel)]="matricule" 
+          name="matricule"
+          (focus)="activateHologram(); matriculeFocused = true"
+          (blur)="matriculeFocused = false"
+          placeholder="MATRICULE"
+          autocomplete="off">
+        <div class="input-underline"></div>
+        <div class="binary-stream"></div>
+      </div>
+
+      <!-- Champ Mot de Passe -->
+      <div class="neuro-input" [class.active]="passwordFocused">
+        <div class="input-icon">
+          <i class="fas fa-lock"></i>
+        </div>
+        <input 
+          type="password" 
+          [(ngModel)]="motDePasse" 
+          name="motDePasse"
+          (focus)="passwordFocused = true"
+          (blur)="passwordFocused = false"
+          placeholder="MOT DE PASSE"
+          autocomplete="off">
+        <div class="input-underline"></div>
+        <div class="cypher-animation"></div>
+      </div>
+
+      <!-- Bouton de Connexion -->
+      <button type="submit" class="quantum-btn" [disabled]="loading">
+        <span class="btn-text">{{ loading ? 'AUTHENTIFICATION...' : 'CONNEXION' }}</span>
+        <div class="btn-ripple"></div>
+        <div class="btn-core"></div>
+      </button>
+    </form>
+    <!-- Lien Mot de passe oublié -->
+<div class="forgot-password">
+  <a href="#" (click)="onForgotPassword()">Mot de passe oublié ?</a>
+</div>
+
+
+    <!-- Pied de Page -->
+    <div class="cyber-footer">
+      <div class="security-scan">
+        <div class="scan-bar" [style.width.%]="securityLevel"></div>
+        <div class="scan-dots"></div>
+      </div>
+      <div class="tech-tags">
+        <span>OCP ACCESS CONTROL</span>
+     
+      
+      </div>
+    </div>
+  </div>
+
+  <!-- Effets Spéciaux -->
+  <div class="cyber-rain"></div>
+  <div class="quantum-distortion"></div>
+</div>

@@ -1,0 +1,159 @@
+<div class="dashboard-container">
+    <app-header-dem></app-header-dem>
+  
+    <main class="main-content">
+      <!-- En-tête holographique -->
+      <section class="page-header">
+        <div class="page-title-section">
+          <div class="page-icon">
+            <mat-icon>assignment_ind</mat-icon>
+          </div>
+          <div class="page-info">
+            <h1 class="page-title">Portail Demandeur</h1>
+            <p class="page-description">Gestion de vos demandes d'intervention</p>
+          </div>
+        </div>
+  
+        <!-- Filtres -->
+        <div class="search-filters">
+  
+          <button class="btn btn-primary" (click)="showAddForm = !showAddForm">
+            <mat-icon>add</mat-icon> Nouvelle Demande
+          </button>
+        </div>
+      </section>
+
+      <!-- Formulaire d'ajout -->
+      <section class="add-form-section" *ngIf="showAddForm">
+        <div class="form-container">
+          <h2><mat-icon>edit</mat-icon> Nouvelle demande d'intervention</h2>
+          
+          <form (submit)="submitNewDemande()" class="demande-form">
+            <div class="form-group">
+              <label for="titre">Titre de la demande</label>
+              <input type="text" id="titre" [(ngModel)]="newDemande.titre" name="titre" required>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="lieu">Lieu</label>
+                <select id="equipement" [(ngModel)]="newDemande.lieu" name="equipement" required>
+                    <option *ngFor="let eq of equipements" [value]="eq.localisation">
+                         {{ eq.localisation }}
+                    </option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="equipement">Équipement concerné</label>
+               <select id="equipement" [(ngModel)]="newDemande.equipementId" name="equipement" required>
+                    <option *ngFor="let eq of equipements" [value]="eq.id">
+                         {{ eq.nom }} - {{ eq.modele }}
+                     </option>
+              </select>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="priorite">Priorité</label>
+                <select id="priorite" [(ngModel)]="newDemande.priorite" name="priorite" required>
+  <option value="BASSE">Basse</option>
+  <option value="MOYENNE">Moyenne</option>
+  <option value="ELEVEE">Élevée</option>
+  <option value="URGENTE">Urgente</option>
+</select>
+
+              </div>
+              
+              <div class="form-group">
+                <label for="niveau">Niveau d'intervention</label>
+                <select id="niveau" [(ngModel)]="newDemande.niveauIntervention" name="niveau" required>
+                  <option value="NIVEAU_1">Niveau 1</option>
+                  <option value="NIVEAU_2">Niveau 2</option>
+                  <option value="NIVEAU_3">Niveau 3</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Description détaillée</label>
+              <textarea id="description" [(ngModel)]="newDemande.description" name="description" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="cancelAddForm()">Annuler</button>
+              <button type="submit" class="btn btn-primary">Soumettre la demande</button>
+            </div>
+          </form>
+        </div>
+      </section>
+  
+      <!-- Cartes de statistiques -->
+      <div class="stats-grid">
+        <div class="stat-card stat-total">
+  <div class="stat-icon">
+    <mat-icon>format_list_bulleted</mat-icon>
+  </div>
+  <div class="stat-content">
+    <h3>Total des demandes</h3>
+    <p class="stat-value">{{ stats.totaleRequests }}</p>
+  </div>
+</div>
+
+        <div class="stat-card stat-demandes">
+          <div class="stat-icon">
+            <mat-icon>pending_actions</mat-icon>
+          </div>
+          <div class="stat-content">
+            <h3>Demandes en attente</h3>
+            <p class="stat-value">{{ stats.pendingRequests }}</p>
+          </div>
+        </div>
+  
+        
+  
+        <div class="stat-card stat-termine">
+          <div class="stat-icon">
+            <mat-icon>done_all</mat-icon>
+          </div>
+          <div class="stat-content">
+            <h3>Validées</h3>
+            <p class="stat-value">{{ stats.completedRequests }}</p>
+          </div>
+        </div>
+  
+        <div class="stat-card stat-urgences">
+          <div class="stat-icon">
+            <mat-icon>emergency</mat-icon>
+          </div>
+          <div class="stat-content">
+            <h3>Rejetées</h3>
+            <p class="stat-value">{{ stats.urgentRequests }}</p>
+          </div>
+        </div>
+      </div>
+  
+     <!-- Statistiques analytiques -->
+<div class="stats-extra">
+  <div class="stat-progress">
+    <h3>Taux de réponse</h3>
+    <mat-progress-bar mode="determinate" [value]="stats.responseRate"></mat-progress-bar>
+    <p>{{ stats.responseRate }} %</p>
+  </div>
+
+  <div class="stat-progress">
+    <h3>Taux de validation</h3>
+    <mat-progress-bar color="primary" mode="determinate" [value]="stats.completionRate"></mat-progress-bar>
+    <p>{{ stats.completionRate }} %</p>
+  </div>
+
+  <div class="stat-progress">
+    <h3>Taux de rejet</h3>
+    <mat-progress-bar color="warn" mode="determinate" [value]="stats.rejectionRate"></mat-progress-bar>
+    <p>{{ stats.rejectionRate }} %</p>
+  </div>
+</div>
+
+    </main>
+  </div>

@@ -1,0 +1,339 @@
+<div class="utilisateurs-admin">
+<app-header-admin></app-header-admin>
+<main class="main-content">
+<div class="equipment-dashboard">
+    
+<!-- En-tête holographique des équipements -->
+<section class="page-header">
+  <div class="page-title-section">
+    <div class="page-icon">
+      <i class="fas fa-desktop"></i>
+    </div>
+    <div class="page-info">
+      <h1 class="page-title">Gestion des Équipements</h1>
+      <p class="page-description">Gérer le parc informatique, associer les équipements aux utilisateurs et suivre leur état</p>
+    </div>
+  </div>
+
+  <!-- Filtres futuristes -->
+  <div class="search-filters">
+    <div class="search-input-container">
+      <input 
+        type="text" 
+        class="search-input" 
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+        placeholder="Rechercher par nom, n° série, type..."
+      >
+    </div>
+
+    <!-- Exemple de filtre par type -->
+    <div class="filter-group">
+      <select [(ngModel)]="selectedType" (change)="applyFilters()">
+        <option value="tous">Tous les types</option>
+        <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <!-- Exemple de filtre par statut -->
+    <div class="filter-group">
+      <select [(ngModel)]="selectedStatus" (change)="applyFilters()">
+        <option value="tous">Tous les statuts</option>
+        <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+
+    <!-- Bouton réinitialiser -->
+    <button class="btn btn-secondary" (click)="resetFilters()">
+      <i class="fas fa-sync-alt"></i> Réinitialiser
+    </button>
+
+    <!-- Actions rapides -->
+    <div class="btn-group">
+      <button class="btn btn-primary" (click)="addEquipment()">
+        <i class="fas fa-plus"></i> Ajouter un équipement
+      </button>
+    </div>
+  </div>
+</section>
+
+ 
+    <!-- Dynamic Alerts Section -->
+    <div class="alerts-section" [@staggerAnimation]="alerts.length">
+      <div class="alert-card" *ngFor="let alert of alerts" 
+           [class]="'alert-card ' + alert.type" [@fadeInRight]>
+        <div class="alert-icon">
+          <i [class]="alert.icon"></i>
+        </div>
+        <div class="alert-content">
+          <h3>{{alert.title}}</h3>
+          <p>{{alert.message}}</p>
+        </div>
+       
+      </div>
+    </div>
+  
+    <!-- Interactive Equipment Table -->
+    <div class="equipment-table-container" [@fadeInUp]>
+      <div class="table-responsive">
+        <table class="equipment-table">
+          <thead>
+            <tr>
+              <th *ngFor="let header of tableHeaders" [class.sortable]="header.sortable" 
+                  (click)="sortTable(header.key)">
+                {{header.label}}
+                <i class="fas" [ngClass]="{
+                  'fa-sort': currentSort.key !== header.key,
+                  'fa-sort-up': currentSort.key === header.key && currentSort.direction === 'asc',
+                  'fa-sort-down': currentSort.key === header.key && currentSort.direction === 'desc'
+                }"></i>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let equipment of filteredEquipments; trackBy: trackById" 
+                [class.warning]="equipment.status === 'HORS_SERVICE'"
+                [@rowAnimation]>
+              <td>
+                <span class="serial-number">{{equipment.numeroSerie}}</span>
+              </td>
+              <td>{{equipment.nom}}</td>
+              <td>
+                <span class="equipment-type" [style.backgroundColor]="getTypeColor(equipment.typeEquipement)">
+                  {{equipment.typeEquipement}}
+                </span>
+              </td>
+              <td>{{equipment.marque}} / {{equipment.modele}}</td>
+             <td>
+  <div class="user-cell" *ngIf="equipment.utilisateur">
+    <div class="user-avatar" [style.background]="getUserColor(equipment.utilisateur)">
+      {{equipment.utilisateur.prenom.charAt(0)}}{{equipment.utilisateur.nom.charAt(0)}}
+    </div>
+    <div class="user-info">
+      <div class="user-name">{{equipment.utilisateur.prenom}} {{equipment.utilisateur.nom}}</div>
+      <div class="user-department">{{equipment.utilisateur.departement}}</div>
+    </div>
+  </div>
+</td>
+
+              <td>
+                <span class="status-badge" [class.active]="equipment.statut === 'EN_SERVICE'"
+                      [class.inactive]="equipment.statut === 'HORS_SERVICE'"
+                      [class.maintenance]="equipment.statut === 'EN_MAINTENANCE'">
+                  {{equipment.statut}}
+                </span>
+              </td>
+              <td>{{equipment.localisation}}</td>
+              <td>{{equipment.dateAchat | date:'dd/MM/yyyy'}}</td>
+              <td>
+                
+                  {{equipment.dateGarantie | date:'dd/MM/yyyy'}}
+                  
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn edit" (click)="editEquipment(equipment)" matRipple>
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="action-btn delete" (click)="confirmDelete(equipment)" matRipple>
+                    <i class="fas fa-trash"></i>
+                  </button>
+                  <button class="action-btn view-detail" (click)="viewEquipmentDetail(equipment)" matRipple>
+                     <i class="fas fa-eye"></i>
+                  </button>
+
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <div class="table-footer" *ngIf="filteredEquipments.length">
+        <div class="pagination-controls">
+          <button (click)="previousPage()" [disabled]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span>Page {{currentPage}} / {{totalPages}}</span>
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="items-per-page">
+          <span>Éléments par page:</span>
+          <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Add/Edit Equipment Modal -->
+   <div class="modal" *ngIf="showAddModal" [@modalAnimation]>
+  <div class="modal-overlay" (click)="closeModal()"></div>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ isEditMode ? 'Modifier' : 'Ajouter' }} un équipement</h2>
+      <button class="close-btn" (click)="closeModal()" matRipple>
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="equipmentForm" (ngSubmit)="submitEquipment()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nom de l'équipement</label>
+            <input type="text" formControlName="nom" placeholder="Ex: PC Portable">
+            <div class="error-message" *ngIf="equipmentForm.get('nom')?.hasError('required')">
+              Ce champ est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Numéro de série</label>
+            <input type="text" formControlName="numeroSerie" placeholder="Ex: SN-001234">
+            <div class="error-message" *ngIf="equipmentForm.get('numeroSerie')?.hasError('required')">
+              Ce champ est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Type</label>
+            <select formControlName="typeEquipement">
+              <option value="">Sélectionner un type</option>
+              <option *ngFor="let type of equipmentTypes" [value]="type.value">{{ type.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Marque</label>
+            <input type="text" formControlName="marque" placeholder="Ex: HP, Canon, Cisco">
+          </div>
+
+          <div class="form-group">
+            <label>Modèle</label>
+            <input type="text" formControlName="modele" placeholder="Ex: EliteBook, Pixma">
+          </div>
+
+          <div class="form-group">
+            <label>Date d'achat</label>
+            <input type="date" formControlName="dateAchat">
+          </div>
+
+          <div class="form-group">
+            <label>Date de fin de garantie</label>
+            <input type="date" formControlName="dateGarantie">
+          </div>
+
+          <div class="form-group">
+            <label>Localisation</label>
+            <input type="text" formControlName="localisation" placeholder="Ex: Bureau RH, Salle serveur">
+          </div>
+
+          <div class="form-group">
+  <label>Utilisateur assigné</label>
+  <select formControlName="utilisateurId">
+    <option value="">Aucun utilisateur</option>
+    <option *ngFor="let user of demandeurs" [value]="user.id">
+      {{ user.nom }} {{ user.prenom }}
+    </option>
+  </select>
+</div>
+
+
+          <div class="form-group">
+            <label>Statut</label>
+            <select formControlName="statut">
+              <option value="EN_SERVICE">En service</option>
+              <option value="HORS_SERVICE">Hors service</option>
+              <option value="EN_MAINTENANCE">En maintenance</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeModal()" matRipple>Annuler</button>
+          <button type="submit" class="submit-btn" [disabled]="!equipmentForm.valid" matRipple>
+            {{ isEditMode ? 'Mettre à jour' : '💾 Enregistrer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+    <!-- Confirmation Dialog -->
+    <div class="confirmation-dialog" [class.active]="showConfirmDialog" [@fadeIn]>
+      <div class="dialog-content">
+        <h3>Confirmer la suppression</h3>
+        <p>Êtes-vous sûr de vouloir supprimer cet équipement ? Cette action est irréversible.</p>
+        <div class="dialog-actions">
+          <button class="cancel-btn" (click)="cancelDelete()" matRipple>Annuler</button>
+          <button class="confirm-btn" (click)="deleteEquipment()" matRipple>Confirmer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment Detail Modal Overlay -->
+<!-- Equipment Detail Modal Overlay -->
+<div class="overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Détails de l'équipement</h2>
+      <button class="close-btn" (click)="closeDetailModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedEquipment">
+      <h3>Équipement</h3>
+      <p><strong>Nom :</strong> {{selectedEquipment.nom}}</p>
+      <p><strong>Numéro de série :</strong> {{selectedEquipment.numeroSerie}}</p>
+      <p><strong>Type :</strong> {{selectedEquipment.typeEquipement}}</p>
+      <p><strong>Marque / Modèle :</strong> {{selectedEquipment.marque}} / {{selectedEquipment.modele}}</p>
+      <p><strong>Localisation :</strong> {{selectedEquipment.localisation}}</p>
+      <p><strong>Statut :</strong> {{selectedEquipment.statut}}</p>
+
+      <hr>
+
+     <h3>Interventions réalisées</h3>
+<div *ngIf="isLoadingDetail">Chargement des interventions...</div>
+<div *ngIf="!isLoadingDetail && (!equipmentInterventions || equipmentInterventions.length === 0)">
+  Aucune intervention trouvée pour cet équipement.
+</div>
+<div *ngIf="!isLoadingDetail && equipmentInterventions.length > 0">
+  <div *ngFor="let interv of equipmentInterventions; let i = index" class="intervention-card">
+    <!-- Partie visible en tout temps -->
+    <div class="interv-summary" (click)="toggleIntervDetail(i)">
+      <p><strong>Titre :</strong> {{interv.demandeIntervention.titre}}</p>
+      <p><strong>Description :</strong> {{interv.demandeIntervention.description}}</p>
+      <p><strong>Date de demande :</strong> {{interv.demandeIntervention.dateDemande | date:'dd/MM/yyyy'}}</p>
+      <span class="toggle-icon">
+        <i class="fas" [ngClass]="{'fa-chevron-down': !interv.showDetail, 'fa-chevron-up': interv.showDetail}"></i>
+      </span>
+    </div>
+
+    <!-- Partie détaillée, affichée seulement si showDetail = true -->
+    <div class="interv-detail" *ngIf="interv.showDetail">
+      <p><strong>Statut Intervention :</strong> {{interv.statut}}</p>
+      <p><strong>Date Début :</strong> {{interv.dateDebut | date:'dd/MM/yyyy'}}</p>
+      <p><strong>Date Fin :</strong> {{interv.dateFin | date:'dd/MM/yyyy'}}</p>
+      <p><strong>Durée :</strong> {{interv.tempsPasse}} heurs</p>
+      <p><strong>Diagnostics :</strong> {{interv.diagnostics}}</p>
+      <p><strong>Solution apportée :</strong> {{interv.solutionApporte}}</p>
+      <p><strong>Commentaire :</strong> {{interv.commentaires}}</p>
+      <p><strong>Validé par demandeur :</strong> {{interv.valideParDemandeur ? 'Oui' : 'Non'}}</p>
+      <hr>
+    </div>
+  </div>
+</div>
+
+  </div></div>
+</div>
+
+</main>
+  </div>

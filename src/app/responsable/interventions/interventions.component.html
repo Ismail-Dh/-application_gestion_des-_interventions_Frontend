@@ -1,0 +1,170 @@
+<div class="interventions-container">
+    <app-header-resp></app-header-resp>
+  
+    <main class="main-content">
+      <!-- En-tête avec Filtres -->
+      <section class="page-header">
+        <div class="page-title-section">
+          <div class="page-icon">
+            <mat-icon>construction</mat-icon>
+          </div>
+          <div class="page-info">
+            <h1 class="page-title">Gestion des Interventions</h1>
+            <p class="page-description">Suivi et gestion des interventions techniques</p>
+          </div>
+        </div>
+
+        <!-- Filtres améliorés alignés -->
+        <div class="search-filters-row">
+          <div class="search-input-container">
+            <input 
+              type="text" 
+              class="search-input" 
+              [(ngModel)]="searchTerm"
+              placeholder="Rechercher une intervention..."
+              (input)="filterInterventions()"
+            >
+          </div>
+          
+          <div class="filter-group">
+            <select [(ngModel)]="selectedStatus" (change)="filterInterventions()">
+              <option value="tous">Tous statuts</option>
+              <option value="PLANIFIEE">Planifiée</option>
+              <option value="EN_COURS">En cours</option>
+              <option value="TERMINEE">Terminée</option>
+              <option value="ESCALADEE">Escaladee</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <select [(ngModel)]="selectedPriority" (change)="filterInterventions()">
+              <option value="tous">Toutes priorités</option>
+              <option value="ELEVEE">Haute</option>
+              <option value="MOYENNE">Moyenne</option>
+              <option value="BASSE">Basse</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <select [(ngModel)]="selectedTechnicien" (change)="filterInterventions()">
+              <option value="tous">Tous techniciens</option>
+              <option *ngFor="let tech of techniciens" [value]="tech.id">{{tech.nom}} {{tech.prenom}}</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary" (click)="resetFilters()">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+      </section>
+  
+      <!-- Grille des interventions -->
+      <div class="interventions-grid">
+        <div class="intervention-card" *ngFor="let intervention of filteredInterventions">
+          <div class="intervention-header">
+            <div class="intervention-ref">
+              <h3>{{intervention.Demande.titre}}</h3>
+              <p class="intervention-date">{{formatDate(intervention.dateIntervention)}}</p>
+            </div>
+            <div class="priority-indicator" 
+                 [class.high]="intervention.Demande.priorite === 'ELEVEE'"
+                 [class.medium]="intervention.Demande.priorite === 'MOYENNE'"
+                 [class.low]="intervention.Demande.priorite === 'BASSE'">
+              {{getPriorityLabel(intervention.Demande.priorite)}}
+            </div>
+          </div>
+  
+          <div class="intervention-content">
+            <p class="intervention-description">{{truncateText(intervention.Demande.description, 100)}}</p>
+            
+            <div class="technicien-info">
+              <h5>Technicien :</h5>
+              <div class="technicien-avatar">
+                {{ getInitials( intervention.Technicien.nom  +" "+ intervention.Technicien.prenom ) }}
+              </div>
+              <div class="technicien-details">
+                <span class="technicien-name">{{ intervention.Technicien.nom }} {{ intervention.Technicien.prenom }}</span>
+                
+              </div>
+            </div>
+          </div>
+  
+          <div class="intervention-footer">
+            <span class="status-badge" 
+                  [class.planned]="intervention.statut === 'PLANIFIEE'"
+                  [class.in-progress]="intervention.statut === 'EN_COURS'"
+                  [class.completed]="intervention.statut === 'TERMINEE'"
+                  [class.cancelled]="intervention.statut === 'ESCALADEE'">
+              {{getStatusLabel(intervention.statut)}}
+            </span>
+            
+            <div class="intervention-actions">
+              <button class="action-btn view" (click)="onSelectIntervention(intervention)">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button class="action-btn edit" (click)="editIntervention(intervention.id)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  <!-- Overlay uniquement si selectedIntervention existe -->
+<div class="overlay" *ngIf="selectedIntervention" (click)="onCloseDetail()">
+
+  <!-- Fenêtre modale : on stoppe la propagation du clic pour ne pas fermer en cliquant dedans -->
+  <div class="modal" (click)="$event.stopPropagation()">
+    <app-intervention-detail [intervention]="selectedIntervention"></app-intervention-detail>
+    
+    <button class="close-btn" (click)="onCloseDetail()">✖ Fermer</button>
+  </div>
+  
+</div>
+<!-- Overlay édition -->
+<div class="overlay1" *ngIf="editingIntervention" (click)="onCloseEdit()">
+  <div class="modal1" (click)="$event.stopPropagation()">
+    <h2>Modifier Intervention</h2>
+
+    <form [formGroup]="editForm" (ngSubmit)="onSaveEdit()">
+      <input type="hidden" formControlName="statut"/>
+
+
+  <!-- 🔥 Champ niveau si escaladée -->
+  <div *ngIf="editForm.get('statut')?.value === 'ESCALADEE'">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Niveau d'intervention</mat-label>
+      <mat-select formControlName="niveauIntervention" (selectionChange)="onNiveauChange($event)">
+        <mat-option value="NIVEAU_1">Niveau 1</mat-option>
+        <mat-option value="NIVEAU_2">Niveau 2</mat-option>
+        <mat-option value="NIVEAU_3">Niveau 3</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Technicien</mat-label>
+        <mat-select formControlName="technicienId">
+          <mat-option *ngFor="let tech of techniciens" [value]="tech.id">
+            {{tech.nom}} {{tech.prenom}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Date début</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dateDebut">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="modal-actions1">
+        <button mat-stroked-button color="warn" type="button" (click)="onCloseEdit()">Annuler</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="editForm.invalid">Enregistrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+    </main>
+</div>

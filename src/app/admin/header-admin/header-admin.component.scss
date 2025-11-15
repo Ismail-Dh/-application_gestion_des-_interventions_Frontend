@@ -1,0 +1,495 @@
+// Configuration premium améliorée
+@use 'sass:math';
+@use 'sass:color';
+@use 'sass:map';
+
+// Nouvelle palette de couleurs OCP premium
+$ocp-palette: (
+  'primary': #378472,
+  'secondary': #00e5ce,
+  'dark': #027949,
+  'light': #f5fbff,
+  'accent': #ff7d54,
+  'warning': #ff9e22,
+  'success': #00d897,
+  'info': #00b8ff,
+  'error': #ff4d6d
+);
+
+// Fonction d'accès aux couleurs améliorée
+@function ocp($name, $lightness: 0%, $alpha: 1) {
+  $color: map.get($ocp-palette, $name);
+  @return rgba(color.scale($color, $lightness: $lightness), $alpha);
+}
+
+/* ========== THÈME GLOBAL ========== */
+:root {
+  --ocp-primary: #{ocp('primary')};
+  --ocp-secondary: #{ocp('secondary')};
+  --ocp-accent: #{ocp('accent')};
+  --ocp-gradient: linear-gradient(13deg, #{ocp('primary')}, #{ocp('secondary')});
+  --ocp-glass: rgba(255, 255, 255, 0.85);
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ========== HEADER ========== */
+.dashboard-header {
+  background:  linear-gradient(to right, #{ocp('dark')}, #{ocp('success')});
+
+  background-size: 400% 400%;
+  //animation: gradientBG 15s ease infinite;
+  color: white;
+  box-shadow: 0 4px 30px rgba(ocp('dark'), 0.2);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+
+  .header-container {
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .logo-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+
+    .logo-gradient {
+      background: var(--ocp-gradient);
+      padding: 0.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 20px rgba(ocp('primary'), 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(ocp('primary'), 0.4);
+      }
+    }
+
+    .ocp-logo {
+      height: 2.5rem;
+      filter: brightness(0) invert(1);
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    .logo-badge {
+      background: linear-gradient(to right, #{ocp('dark')}, #{ocp('success')});
+      color: rgb(152, 231, 177);
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 2px 10px rgba(ocp('dark'), 0.2);
+    }
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    position: relative;
+  }
+  
+  // 📋 Liens de navigation centrés
+  ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+  
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  
+    li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+  
+      &:hover {
+        color: #b4ffda;
+      }
+    }
+  }
+  
+  // ☰ Icône menu (mobile)
+  .menu-icon {
+    font-size: 26px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: none;
+  }
+  
+  .user-panel {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-shrink: 0;
+
+    .notification-btn {
+      color: white;
+      background: rgba(white, 0.1);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &:hover {
+        background: rgba(white, 0.2);
+        transform: translateY(-2px);
+      }
+      
+      .mat-badge-content {
+        font-weight: 600;
+      }
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem 0.5rem 0.5rem;
+      border-radius: 2rem;
+      background: rgba(white, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+
+      &:hover {
+        background: rgba(white, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .user-avatar {
+        position: relative;
+        
+        mat-icon {
+          font-size: 2.25rem;
+          color: white;
+          transition: transform 0.3s ease;
+        }
+
+        .online-status {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 0.75rem;
+          height: 0.75rem;
+          background: #{ocp('success')};
+          border: 2px solid #{ocp('dark')};
+          border-radius: 50%;
+        }
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        
+        .user-name {
+          font-weight: 600;
+          color: white;
+          font-size: 0.9rem;
+        }
+
+        .user-role {
+          font-size: 0.75rem;
+          color: rgba(white, 0.8);
+        }
+      }
+      
+      .dropdown-icon {
+        color: rgba(white, 0.7);
+        transition: transform 0.3s ease;
+      }
+      
+      &[aria-expanded="true"] {
+        .dropdown-icon {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}
+
+/* ========== MENU UTILISATEUR ========== */
+.user-menu-premium {
+  min-width: 280px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(ocp('dark'), 0.2);
+  border: 1px solid rgba(white, 0.1);
+  background: rgba(ocp('dark'), 0.95);
+  backdrop-filter: blur(10px);
+  
+  .menu-header {
+    padding: 1.5rem;
+    background: linear-gradient(to right, #{ocp('primary')}, #{ocp('secondary')});
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    
+    .user-avatar-large {
+      mat-icon {
+        font-size: 3rem;
+        color: white;
+      }
+    }
+    
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      
+      .user-name {
+        font-weight: 600;
+        color: white;
+      }
+      
+      .user-email {
+        font-size: 0.8rem;
+        color: rgba(white, 0.9);
+      }
+    }
+  }
+  
+  .mat-menu-content {
+    padding: 0;
+    
+    button.mat-menu-item {
+      color: rgba(white, 0.9);
+      transition: all 0.2s ease;
+      
+      &:hover {
+        color: white;
+        background: rgba(white, 0.1);
+      }
+      
+      mat-icon {
+        color: #{ocp('primary')};
+        margin-right: 1rem;
+      }
+      
+      .logout-icon {
+        color: #{ocp('error')};
+      }
+    }
+    
+    .mat-divider {
+      border-color: rgba(white, 0.1);
+    }
+  }
+}
+
+/* ========== STRUCTURE GÉNÉRALE ========== */
+.dashboard-container {
+  min-height: 100vh;
+  background-color: #{ocp('light')};
+  position: relative;
+}
+/* ========== SECTION STATS FUTURISTES ========== */
+.stats-section {
+  padding: 5rem 2rem;
+  background: var(--ocp-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(0, 247, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 45, 117, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--ocp-dark);
+  margin-bottom: 3rem;
+  font-size: 1.8rem;
+  position: relative;
+  z-index: 2;
+}
+
+.section-title mat-icon {
+  color: var(--ocp-primary);
+  font-size: 2rem;
+  text-shadow: var(--glow-primary);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(0, 26, 26, 0.1);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 247, 255, 0.2);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--ocp-gradient);
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 26, 26, 0.2);
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0, 247, 255, 0.05);
+  transition: var(--transition-smooth);
+  z-index: -1;
+}
+
+.stat-card:hover::after {
+  height: 100%;
+}
+
+.stat-icon-container {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+  background: rgba(0, 247, 255, 0.1);
+  color: var(--ocp-primary);
+  box-shadow: inset 0 0 0 1px rgba(0, 247, 255, 0.3);
+  transition: var(--transition-smooth);
+}
+
+.stat-card:hover .stat-icon-container {
+  background: rgba(0, 247, 255, 0.2);
+  transform: rotate(15deg) scale(1.1);
+  box-shadow: inset 0 0 0 1px rgba(0, 247, 255, 0.5), 0 0 20px rgba(0, 247, 255, 0.3);
+}
+
+.stat-icon-container mat-icon {
+  font-size: 2rem;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--ocp-dark);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stat-value span {
+  font-size: 1rem;
+  color: var(--ocp-primary);
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: rgba(0, 26, 26, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.stat-progress {
+  margin-top: 1.5rem;
+}
+
+.stat-progress ::ng-deep .mat-progress-bar {
+  border-radius: 10px;
+  height: 8px;
+}
+
+.stat-progress ::ng-deep .mat-progress-bar-fill::after {
+  background: var(--ocp-gradient);
+  box-shadow: var(--glow-primary);
+}
+
+.stat-progress ::ng-deep .mat-progress-bar-buffer {
+  background: rgba(0, 247, 255, 0.1);
+}
+
+.stat-users {
+  --ocp-gradient: linear-gradient(135deg, var(--ocp-primary), var(--ocp-info));
+}
+
+.stat-activeDevices {
+  --ocp-gradient: linear-gradient(135deg, var(--ocp-secondary), var(--ocp-success));
+}
+
+.stat-alerts {
+  --ocp-gradient: linear-gradient(135deg, var(--ocp-accent), var(--ocp-warning));
+}
+
+.stat-storage {
+  --ocp-gradient: linear-gradient(135deg, var(--ocp-dark), var(--ocp-secondary));
+}
+

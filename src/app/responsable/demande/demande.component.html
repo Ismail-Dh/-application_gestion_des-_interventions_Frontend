@@ -1,0 +1,348 @@
+<div class="dashboard-container">
+  <!-- Header component -->
+  <app-header-resp></app-header-resp>
+  
+  <main class="main-content">
+    <!-- En-tête holographique -->
+    <section class="page-header">
+      <div class="page-title-section">
+        <div class="page-icon">
+          <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="page-info">
+          <h1 class="page-title">Gestion des Demandes</h1>
+          <p class="page-description">Interface de gestion des demandes d'intervention</p>
+        </div>
+      </div>
+
+      <!-- Filtres futuristes -->
+      <div class="search-filters">
+        <div class="search-input-container">
+          <input 
+            type="text" 
+            class="search-input" 
+            [(ngModel)]="searchTerm"
+            placeholder="Rechercher une demande..."
+          >
+        </div>
+        
+        <div class="filter-group">
+          <select [(ngModel)]="selectedFilter">
+            <option value="tous">Toutes les demandes</option>
+            <option value="haute">Priorité haute</option>
+            <option value="moyenne">Priorité moyenne</option>
+            <option value="basse">Priorité basse</option>
+          </select>
+        </div>
+
+        <button class="btn btn-secondary" (click)="resetFilters()">
+          <i class="fas fa-sync-alt"></i> Réinitialiser
+        </button>
+      </div>
+    </section>
+
+
+    <!-- Onglets de statut -->
+<div class="user-tabs">
+  <button 
+    class="tab" 
+    [class.active]="activeTab === 'en_attente'"
+    (click)="activeTab = 'en_attente'">
+    <i class="fas fa-hourglass-half"></i> En attente
+    <span class="badge">{{ demandesEnAttente.length }}</span>
+  </button>
+
+  <button 
+    class="tab" 
+    [class.active]="activeTab === 'validee'"
+    (click)="activeTab = 'validee'">
+    <i class="fas fa-check-circle"></i> Validée
+    <span class="badge">{{ demandesValidees.length }}</span>
+  </button>
+
+  <button 
+    class="tab" 
+    [class.active]="activeTab === 'terminee'"
+    (click)="activeTab = 'terminee'">
+    <i class="fas fa-flag-checkered"></i> Terminée
+    <span class="badge">{{ demandesTerminees.length }}</span>
+  </button>
+
+  <button 
+    class="tab" 
+    [class.active]="activeTab === 'rejetee'"
+    (click)="activeTab = 'rejetee'">
+    <i class="fas fa-times-circle"></i> Rejetée
+    <span class="badge">{{ demandesRejetees.length }}</span>
+  </button>
+</div>
+
+
+
+    <!-- Cartes des demandes -->
+    <div class="user-cards" *ngIf="activeTab === 'en_attente'">
+      <div 
+        *ngFor="let demande of demandesEnAttente" 
+        class="user-card demande-card"
+        [class.priority-high]="demande.priorite === 'Haute'"
+        [class.priority-medium]="demande.priorite === 'Moyenne'"
+        [class.priority-low]="demande.priorite === 'Basse'"
+      >
+        <div class="user-header">
+          <div class="user-avatar">
+            <mat-icon>assignment</mat-icon>
+          </div>
+          <div class="user-info">
+            <h3>{{ demande.titre }}</h3>
+            <p class="user-email">{{ demande.description }}</p>
+            <span class="date-badge">
+              <i class="fas fa-calendar"></i>
+              {{ demande.dateDemande | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="user-status">
+            <span class="status-badge" [ngClass]="'priority-' + demande.priorite.toLowerCase()">
+              {{ demande.priorite }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="user-details">
+          <div class="detail-item">
+            <div class="label">Date</div>
+            <div class="value">{{ demande.dateDemande | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Statut</div>
+            <div class="value">{{ demande.statut }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Niveau</div>
+            <div class="value">{{ demande.niveauIntervention }}</div>
+          </div>
+        </div>
+        
+        <div class="user-actions">
+          <button class="action-btn reject" (click)="refuserDemande(demande)">
+            <i class="fas fa-times"></i> Refuser
+          </button>
+          <button class="action-btn accept" (click)="openTechniciensModal(demande)">
+            <i class="fas fa-check"></i> Accepter
+          </button>
+        </div>
+      </div>
+      <!-- Message si aucune demande -->
+      <div *ngIf="demandesEnAttente.length === 0" class="no-demands">
+        <mat-icon>info</mat-icon>
+        <p>Aucune demande en attente</p>
+      </div>
+    </div>
+     <div class="user-cards" *ngIf="activeTab === 'validee'">
+     
+      
+      <div 
+        *ngFor="let demande of demandesValidees" 
+        class="user-card demande-card"
+        [class.priority-high]="demande.priorite === 'Haute'"
+        [class.priority-medium]="demande.priorite === 'Moyenne'"
+        [class.priority-low]="demande.priorite === 'Basse'"
+      >
+        <div class="user-header">
+          <div class="user-avatar">
+            <mat-icon>assignment</mat-icon>
+          </div>
+          <div class="user-info">
+            <h3>{{ demande.titre }}</h3>
+            <p class="user-email">{{ demande.description }}</p>
+            <span class="date-badge">
+              <i class="fas fa-calendar"></i>
+              {{ demande.dateDemande | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="user-status">
+            <span class="status-badge" [ngClass]="'priority-' + demande.priorite.toLowerCase()">
+              {{ demande.priorite }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="user-details">
+          <div class="detail-item">
+            <div class="label">Date</div>
+            <div class="value">{{ demande.dateDemande | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Statut</div>
+            <div class="value">{{ demande.statut }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Niveau</div>
+            <div class="value">{{ demande.niveauIntervention }}</div>
+          </div>
+        </div>
+        
+      
+      </div>
+      <!-- Message si aucune demande -->
+      <div *ngIf="demandesValidees.length === 0" class="no-demands">
+        <mat-icon>info</mat-icon>
+        <p>Aucune demande validee</p>
+      </div>
+    </div>
+    <div class="user-cards" *ngIf="activeTab === 'terminee'">
+     
+      
+      <div 
+        *ngFor="let demande of demandesTerminees" 
+        class="user-card demande-card"
+        [class.priority-high]="demande.priorite === 'ELEVEE'"
+        [class.priority-medium]="demande.priorite === 'Moyenne'"
+        [class.priority-low]="demande.priorite === 'Basse'"
+      >
+        <div class="user-header">
+          <div class="user-avatar">
+            <mat-icon>assignment</mat-icon>
+          </div>
+          <div class="user-info">
+            <h3>{{ demande.titre }}</h3>
+            <p class="user-email">{{ demande.description }}</p>
+            <span class="date-badge">
+              <i class="fas fa-calendar"></i>
+              {{ demande.dateDemande | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="user-status">
+            <span class="status-badge" [ngClass]="'priority-' + demande.priorite.toLowerCase()">
+              {{ demande.priorite }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="user-details">
+          <div class="detail-item">
+            <div class="label">Date</div>
+            <div class="value">{{ demande.dateDemande | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Statut</div>
+            <div class="value">{{ demande.statut }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Niveau</div>
+            <div class="value">{{ demande.niveauIntervention }}</div>
+          </div>
+        </div>
+        
+       
+      </div>
+      <!-- Message si aucune demande -->
+      <div *ngIf="demandesTerminees.length === 0" class="no-demands">
+        <mat-icon>info</mat-icon>
+        <p>Aucune demande terminee</p>
+      </div>
+    </div>
+    <div class="user-cards" *ngIf="activeTab === 'rejetee'">
+     
+      
+      <div 
+        *ngFor="let demande of demandesRejetees" 
+        class="user-card demande-card"
+        [class.priority-high]="demande.priorite === 'Haute'"
+        [class.priority-medium]="demande.priorite === 'Moyenne'"
+        [class.priority-low]="demande.priorite === 'Basse'"
+      >
+        <div class="user-header">
+          <div class="user-avatar">
+            <mat-icon>assignment</mat-icon>
+          </div>
+          <div class="user-info">
+            <h3>{{ demande.titre }}</h3>
+            <p class="user-email">{{ demande.description }}</p>
+            <span class="date-badge">
+              <i class="fas fa-calendar"></i>
+              {{ demande.dateDemande | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+          <div class="user-status">
+            <span class="status-badge" [ngClass]="'priority-' + demande.priorite.toLowerCase()">
+              {{ demande.priorite }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="user-details">
+          <div class="detail-item">
+            <div class="label">Date</div>
+            <div class="value">{{ demande.dateDemande | date:'dd/MM/yyyy' }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Statut</div>
+            <div class="value">{{ demande.statut }}</div>
+          </div>
+          <div class="detail-item">
+            <div class="label">Niveau</div>
+            <div class="value">{{ demande.niveauIntervention }}</div>
+          </div>
+        </div>
+        
+      
+      </div>
+      <!-- Message si aucune demande -->
+      <div *ngIf="demandesRejetees.length === 0" class="no-demands">
+        <mat-icon>info</mat-icon>
+        <p>Aucune demande rejetee</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal de sélection des techniciens -->
+<div class="modal-overlay" *ngIf="showTechniciensModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2><i class="fas fa-user-tie"></i> Affecter un technicien</h2>
+      <button mat-icon-button (click)="closeTechniciensModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div class="modal-content">
+      <div class="accept-form-container">
+        <div class="form-header">
+          <h2>Affecter un technicien</h2>
+          <p>Veuillez sélectionner un technicien pour la demande</p>
+        </div>
+
+        <div class="form-content">
+          
+          <div class="form-group">
+            <label>Technicien</label>
+            <select class="technicien-select" [(ngModel)]="selectedTechnicien">
+              <option *ngFor="let tech of techniciensDisponibles" [ngValue]="tech">
+                {{ tech.nom }} {{tech.prenom}} (Niveau {{ tech.niveau }})
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Date d'intervention prévue</label>
+            <div class="date-selection">
+              <input type="date" class="date-input" [(ngModel)]="interventionDate">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-cancel" (click)="closeTechniciensModal()">
+            <i class="fas fa-times"></i> Annuler
+          </button>
+          <button class="btn btn-submit" 
+                  [disabled]="!selectedTechnicien"
+                  (click)="confirmTechnicienSelection()">
+            <i class="fas fa-check"></i> Confirmer l'affectation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

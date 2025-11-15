@@ -1,0 +1,204 @@
+<div class="interventions-container">
+  <app-header-dem></app-header-dem>
+
+  <main class="main-content">
+    <!-- En-tête -->
+    <section class="page-header">
+      <div class="page-title-section">
+        <div class="page-icon">
+          <mat-icon>assignment</mat-icon>
+        </div>
+        <div class="page-info">
+          <h1 class="page-title">Mes Interventions</h1>
+          <p class="page-description">Liste des interventions assignées à mon compte</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grille des interventions -->
+   <div class="interventions-grid">
+        <div class="intervention-card" *ngFor="let intervention of filteredInterventions">
+          <div class="intervention-header">
+            <div class="intervention-ref">
+              <h3>{{intervention.Demande.titre}}</h3>
+              <p class="intervention-date">{{formatDate(intervention.dateIntervention)}}</p>
+            </div>
+            <div class="priority-indicator" 
+                 [class.high]="intervention.Demande.priorite === 'ELEVEE'"
+                 [class.medium]="intervention.Demande.priorite === 'MOYENNE'"
+                 [class.low]="intervention.Demande.priorite === 'BASSE'">
+              {{getPriorityLabel(intervention.Demande.priorite)}}
+            </div>
+          </div>
+  
+          <div class="intervention-content">
+            <p class="intervention-description">{{truncateText(intervention.Demande.description, 100)}}</p>
+            
+            <div class="technicien-info">
+              <h5>Technicien :</h5>
+              <div class="technicien-avatar">
+                {{ getInitials( intervention.Technicien.nom  +" "+ intervention.Technicien.prenom ) }}
+              </div>
+              <div class="technicien-details">
+                <span class="technicien-name">{{ intervention.Technicien.nom }} {{ intervention.Technicien.prenom }}</span>
+                
+              </div>
+            </div>
+          </div>
+  
+          <div class="intervention-footer">
+            <span class="status-badge" 
+                  [class.planned]="intervention.statut === 'PLANIFIEE'"
+                  [class.in-progress]="intervention.statut === 'EN_COURS'"
+                  [class.completed]="intervention.statut === 'TERMINEE'"
+                  [class.cancelled]="intervention.statut === 'ESCALADEE'">
+              {{getStatusLabel(intervention.statut)}}
+            </span>
+          
+          <div class="intervention-actions">
+            <!-- Bouton détail toujours présent -->
+            <button class="action-btn view" (click)="onSelectIntervention(intervention)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+
+            <!-- Bouton valider seulement si statut en attente -->
+            <button class="action-btn validate" 
+                    *ngIf="intervention.statut === 'EN_ATTENTE_VALIDATION'" 
+                    (click)="onValider(intervention)">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay détail -->
+    <div class="overlay" *ngIf="intervention" (click)="onCloseDetail()">
+      <div class="modal" (click)="$event.stopPropagation()">
+       <div class="intervention-detail-container">
+
+  <!-- Informations Générales -->
+  <section class="section general-info">
+    <h2>Informations Générales</h2>
+    <div class="field">
+      <label>Statut :</label>
+      <span>{{ intervention.statut }}</span>
+    </div>
+    <div class="field">
+      <label>Date prévue (Date Début) :</label>
+      <span>{{ formatDate(intervention.dateDebut) }}</span>
+    </div>
+    <div class="field">
+      <label>Date de création (Date Intervention) :</label>
+      <span>{{ formatDate(intervention.dateIntervention) }}</span>
+    </div>
+    <div class="field">
+      <label>Temps passé :</label>
+      <span>{{ intervention.tempsPasse ?? 'Non défini' }} heurs</span>
+    </div>
+    <div class="field">
+      <label>Diagnostic :</label>
+      <span>{{ intervention.diagnostics ?? 'Non défini' }}</span>
+    </div>
+    <div class="field">
+      <label>Solution apportée :</label>
+      <span>{{ intervention.solutionApporte ?? 'Non défini' }}</span>
+    </div>
+    <div class="field">
+      <label>Commentaires :</label>
+      <span>{{ intervention.commentaires ?? 'Aucun' }}</span>
+    </div>
+    <div class="field">
+      <label>Validé par demandeur :</label>
+      <span>{{ intervention.valideParDemandeur ? 'Oui' : 'Non' }}</span>
+    </div>
+  </section>
+
+  <!-- Demande -->
+  <section class="section demande-info">
+    <h2>Informations de la Demande</h2>
+    <div class="field">
+      <label>Titre :</label>
+      <span>{{ intervention.Demande.titre }}</span>
+    </div>
+    <div class="field">
+      <label>Lieu :</label>
+      <span>{{ intervention.Demande.lieu }}</span>
+    </div>
+    <div class="field">
+      <label>Description :</label>
+      <p>{{ intervention.Demande.description }}</p>
+    </div>
+    <div class="field">
+      <label>Date de demande :</label>
+      <span>{{ formatDate(intervention.Demande.dateDemande) }}</span>
+    </div>
+    
+    <div class="field">
+      <label>Priorité :</label>
+      <span>{{ intervention.Demande.priorite }}</span>
+    </div>
+    <div class="field">
+      <label>Niveau d'intervention :</label>
+      <span>{{ intervention.Demande.niveauIntervention }}</span>
+    </div>
+  </section>
+<!-- ✅ Nouvelle section pour l’équipement -->
+<section class="section equipement-info">
+  <h2>Informations de l'Équipement</h2>
+  <div class="field">
+    <label>Marque :</label>
+    <span>{{ intervention.Equipement.marque }}</span>
+  </div>
+  <div class="field">
+    <label>Modele :</label>
+    <span>{{ intervention.Equipement.modele }}</span>
+  </div>
+  <div class="field">
+    <label>Type :</label>
+    <span>{{ intervention.Equipement.typeEquipement }}</span>
+  </div>
+  <div class="field">
+    <label>Référence :</label>
+    <span>{{ intervention.Equipement.numeroSerie }}</span>
+  </div>
+
+</section>
+
+
+
+  <!-- Technicien -->
+  <section class="section technicien-info">
+    <h2>Informations du Technicien</h2>
+    <div class="field">
+      <label>Nom :</label>
+      <span>{{ intervention.Technicien.nom }}</span>
+    </div>
+    <div class="field">
+      <label>Prénom :</label>
+      <span>{{ intervention.Technicien.prenom }}</span>
+    </div>
+    <div class="field">
+      <label>Matricule :</label>
+      <span>{{ intervention.Technicien.matricule }}</span>
+    </div>
+    <div class="field">
+      <label>Téléphone :</label>
+      <span>{{ intervention.Technicien.telephone }}</span>
+    </div>
+    <div class="field">
+      <label>Email :</label>
+      <span>{{ intervention.Technicien.email }}</span>
+    </div>
+   <div class="field">
+      <label>Niveau :</label>
+      <span>{{ intervention.Technicien.niveau }}</span>
+    </div>
+  </section>
+
+</div>
+        <button class="close-btn" (click)="onCloseDetail()">✖ Fermer</button>
+      </div>
+    </div>
+  </main>
+</div>

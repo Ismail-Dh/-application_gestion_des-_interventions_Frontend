@@ -1,0 +1,254 @@
+<div class="interventions-container">
+  <app-header-tech></app-header-tech>
+
+  <main class="main-content">
+    <!-- En-tête -->
+    <section class="page-header">
+      <div class="page-title-section">
+        <div class="page-icon">
+          <mat-icon>construction</mat-icon>
+        </div>
+        <div class="page-info">
+          <h1 class="page-title">Gestion des Interventions</h1>
+          <p class="page-description">Suivi et gestion des interventions techniques</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Barre d’onglets -->
+    <mat-tab-group [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">
+      <mat-tab label="Planifiées"></mat-tab>
+      <mat-tab label="En cours"></mat-tab>
+       <mat-tab label="En attente validation"></mat-tab>
+      <mat-tab label="Terminées"></mat-tab>
+      <mat-tab label="Escaladées"></mat-tab>
+    </mat-tab-group>
+
+    <!-- Tableau des interventions -->
+    <table class="intervention-table" *ngIf="filteredInterventions.length > 0">
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Description</th>
+          <th>Date</th>
+          <th>Priorité</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let intervention of filteredInterventions">
+          <td>{{ intervention.Demande.titre }}</td>
+          <td>{{ truncateText(intervention.Demande.description, 50) }}</td>
+          <td>{{ formatDate(intervention.dateIntervention) }}</td>
+          <td>
+            <span [class.high]="intervention.Demande.priorite === 'ELEVEE'"
+                  [class.medium]="intervention.Demande.priorite === 'MOYENNE'"
+                  [class.low]="intervention.Demande.priorite === 'BASSE'">
+              {{ getPriorityLabel(intervention.Demande.priorite) }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge"
+                  [class.planned]="intervention.statut === 'PLANIFIEE'"
+                  [class.in-progress]="intervention.statut === 'EN_COURS'"
+                  [class.in-progress]="intervention.statut === 'EN_ATTENTE_VALIDATION'"
+                  [class.completed]="intervention.statut === 'TERMINEE'"
+                  [class.cancelled]="intervention.statut === 'ESCALADEE'">
+              {{ getStatusLabel(intervention.statut) }}
+            </span>
+          </td>
+                    <td>
+            <!-- Bouton "visibility" (toujours visible) -->
+            <button class="action-btn view" (click)="onSelectIntervention(intervention)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          
+            <!-- Bouton "edit" (visible uniquement si statut = EN_COURS) -->
+            <button *ngIf="intervention.statut === 'EN_COURS'" class="action-btn edit" (click)="editIntervention(intervention)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          
+            <!-- Bouton "escalader" (visible uniquement si statut = EN_COURS) -->
+            <button *ngIf="intervention.statut === 'EN_COURS'" class="action-btn escalate" (click)="onEscalate(intervention)">
+              <mat-icon>priority_high</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p *ngIf="filteredInterventions.length === 0" class="no-data">
+      Aucune intervention trouvée pour ce statut.
+    </p>
+
+    
+  </main>
+
+  <div class="overlay" *ngIf="intervention" (click)="onCloseDetail()">
+
+  <!-- Fenêtre modale : on stoppe la propagation du clic pour ne pas fermer en cliquant dedans -->
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="intervention-detail-container">
+
+  <!-- Informations Générales -->
+  <section class="section general-info">
+    <h2>Informations Générales</h2>
+    <div class="field">
+      <label>Statut :</label>
+      <span>{{ intervention.statut }}</span>
+    </div>
+    <div class="field">
+      <label>Date prévue (Date Début) :</label>
+      <span>{{ formatDate(intervention.dateDebut) }}</span>
+    </div>
+    <div class="field">
+      <label>Date de création (Date Intervention) :</label>
+      <span>{{ formatDate(intervention.dateIntervention) }}</span>
+    </div>
+     <!-- Ces informations ne s'affichent que si le statut est TERMINEE -->
+  <div *ngIf="intervention.statut === 'TERMINEE' || 'EN_ATTENTE_VALIDATION'">
+    <div class="field">
+      <label>Temps passé :</label>
+      <span>{{ intervention.tempsPasse ?? 'Non défini' }} heures</span>
+    </div>
+    <div class="field">
+      <label>Diagnostic :</label>
+      <span>{{ intervention.diagnostics ?? 'Non défini' }}</span>
+    </div>
+    <div class="field">
+      <label>Solution apportée :</label>
+      <span>{{ intervention.solutionApporte ?? 'Non défini' }}</span>
+    </div>
+    <div class="field">
+      <label>Commentaires :</label>
+      <span>{{ intervention.commentaires ?? 'Aucun' }}</span>
+    </div>
+    <div class="field">
+      <label>Validé par demandeur :</label>
+      <span>{{ intervention.valideParDemandeur ? 'Oui' : 'Non' }}</span>
+    </div>
+  </div>
+   
+  </section>
+
+  <!-- Demande -->
+  <section class="section demande-info">
+    <h2>Informations de la Demande</h2>
+    <div class="field">
+      <label>Titre :</label>
+      <span>{{ intervention.Demande.titre }}</span>
+    </div>
+    <div class="field">
+      <label>Lieu :</label>
+      <span>{{ intervention.Demande.lieu }}</span>
+    </div>
+    <div class="field">
+      <label>Description :</label>
+      <p>{{ intervention.Demande.description }}</p>
+    </div>
+    <div class="field">
+      <label>Date de demande :</label>
+      <span>{{ formatDate(intervention.Demande.dateDemande) }}</span>
+    </div>
+    
+    <div class="field">
+      <label>Priorité :</label>
+      <span>{{ intervention.Demande.priorite }}</span>
+    </div>
+    <div class="field">
+      <label>Niveau d'intervention :</label>
+      <span>{{ intervention.Demande.niveauIntervention }}</span>
+    </div>
+  </section>
+<!-- ✅ Nouvelle section pour l’équipement -->
+<section class="section equipement-info">
+  <h2>Informations de l'Équipement</h2>
+  <div class="field">
+    <label>Marque :</label>
+    <span>{{ intervention.Equipement.marque }}</span>
+  </div>
+  <div class="field">
+    <label>Modele :</label>
+    <span>{{ intervention.Equipement.modele }}</span>
+  </div>
+  <div class="field">
+    <label>Type :</label>
+    <span>{{ intervention.Equipement.typeEquipement }}</span>
+  </div>
+  <div class="field">
+    <label>Référence :</label>
+    <span>{{ intervention.Equipement.numeroSerie }}</span>
+  </div>
+
+</section>
+
+<!-- ✅ Nouvelle section pour le demandeur -->
+<section class="section demandeur-info">
+  <h2>Informations du Demandeur</h2>
+  <div class="field">
+    <label>Nom :</label>
+    <span>{{ intervention.Demandeur.nom }}</span>
+  </div>
+    <div class="field">
+    <label>Prenom :</label>
+    <span>{{ intervention.Demandeur.prenom }}</span>
+  </div>
+  <div class="field">
+    <label>Email :</label>
+    <span>{{ intervention.Demandeur.email }}</span>
+  </div>
+  <div class="field">
+    <label>Téléphone :</label>
+    <span>{{ intervention.Demandeur.telephone }}</span>
+  </div>
+  <div class="field">
+    <label>Service :</label>
+    <span>{{ intervention.Demandeur.departement }}</span>
+  </div>
+</section>
+
+
+
+</div>
+    <button class="close-btn" (click)="onCloseDetail()">✖ Fermer</button>
+  </div>
+  
+</div>
+
+<div class="overlay2" *ngIf="editMode" (click)="onCloseEditForm()">
+  <!-- Fenêtre modale pour l'édition -->
+  <div class="modal2" (click)="$event.stopPropagation()">
+    <div class="edit-form-container">
+      <h2>Modifier les Informations de l'Intervention</h2>
+
+    <form [formGroup]="editForm" (ngSubmit)="onSubmitEditForm()">
+  <div class="form-field">
+    <label for="diagnostics">Diagnostic :</label>
+    <textarea id="diagnostics" formControlName="diagnostics" rows="3"></textarea>
+  </div>
+
+  <div class="form-field">
+    <label for="solutionApporte">Solution Apportée :</label>
+    <textarea id="solutionApporte" formControlName="solutionApporte" rows="3"></textarea>
+  </div>
+
+  <div class="form-field">
+    <label for="commentaires">Commentaires :</label>
+    <textarea id="commentaires" formControlName="commentaires" rows="3"></textarea>
+  </div>
+
+  <input id="dateFin" type="hidden" formControlName="dateFin" />
+  <input id="tempsPasse" type="hidden" formControlName="tempsPasse" />
+
+  <div class="form-actions">
+    <button type="submit" class="save-btn">Enregistrer</button>
+    <button type="button" class="cancel-btn" (click)="onCloseEditForm()">Annuler</button>
+  </div>
+</form>
+
+    </div>
+  </div>
+</div>
+
+</div>

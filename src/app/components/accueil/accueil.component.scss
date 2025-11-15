@@ -1,0 +1,300 @@
+@use "sass:color";
+
+// Variables de couleur
+$primary: #004732;
+$secondary: #00C98D;
+$accent: #6AC47E;
+$light: #E8FFF5;
+$dark: #00291C;
+
+// Animation de fond améliorée
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// Animation des éléments flottants
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+// 🌈 Container principal
+.accueil-container {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, $primary, $dark, $secondary, $accent);
+  background-size: 300% 300%;
+  animation: gradientMove 12s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  color: $light;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+// Structure du contenu
+.content-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 1200px;
+  z-index: 2;
+}
+
+// Partie texte à gauche
+.text-content {
+  width: 55%;
+  text-align: left;
+  animation: fadeInLeft 0.8s ease-out;
+  
+  h1 {
+    font-size: 3.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    
+    span {
+      color: $secondary;
+      font-weight: 800;
+    }
+  }
+  
+  .slogan {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    opacity: 0.9;
+  }
+}
+
+// Features
+.features {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  
+  .feature-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+      margin: 0;
+    }
+  }
+}
+
+// Partie logo à droite
+.logo-container {
+  width: 40%;
+  position: relative;
+  animation: fadeInRight 0.8s ease-out;
+}
+
+.logo-circle {
+  width: 350px;
+  height: 350px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  
+  .logo-grosse {
+    width: 180px;
+    height: auto;
+    filter: drop-shadow(0 0 15px rgba(0, 201, 141, 0.5));
+    z-index: 2;
+  }
+  
+  .glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0,201,141,0.3) 0%, rgba(0,201,141,0) 70%);
+    border-radius: 50%;
+    animation: pulse 4s infinite alternate;
+  }
+}
+
+.tech-dots {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background-image: radial-gradient(circle, $light 2px, transparent 2px);
+  background-size: 20px 20px;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+// 🔘 Bouton principal amélioré
+.btn-principal {
+  background: $secondary;
+  color: $dark;
+  border: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 15px 35px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0, 201, 141, 0.4);
+  
+  &:hover {
+    background: color.adjust($secondary, $lightness: 5%);
+
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 201, 141, 0.6);
+    
+    .arrow {
+      transform: translateX(5px);
+    }
+  }
+  
+  .arrow {
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+  }
+}
+
+// Éléments flottants décoratifs
+.floating-elements {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  
+  .circle, .square, .triangle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.15;
+    animation: float 6s infinite ease-in-out;
+  }
+  
+  .c1 {
+    width: 150px;
+    height: 150px;
+    background: $secondary;
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+  }
+  
+  .c2 {
+    width: 80px;
+    height: 80px;
+    background: $light;
+    bottom: 15%;
+    left: 15%;
+    animation-delay: 1s;
+  }
+  
+  .c3 {
+    width: 200px;
+    height: 200px;
+    background: $accent;
+    bottom: 5%;
+    right: 10%;
+    animation-delay: 2s;
+  }
+  
+  .sq1 {
+    width: 100px;
+    height: 100px;
+    background: $light;
+    top: 20%;
+    right: 20%;
+    border-radius: 20px;
+    animation-delay: 1.5s;
+  }
+  
+  .triangle {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid $accent;
+    top: 60%;
+    right: 5%;
+    opacity: 0.2;
+    border-radius: 0;
+    animation-delay: 3s;
+  }
+}
+
+// Animations d'entrée
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.1); opacity: 0.8; }
+}
+
+// Responsive
+@media (max-width: 992px) {
+  .content-wrapper {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .text-content, .logo-container {
+    width: 100%;
+  }
+  
+  .logo-container {
+    margin-top: 3rem;
+  }
+  
+  .features {
+    justify-content: center;
+  }
+}

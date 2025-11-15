@@ -1,0 +1,352 @@
+<div class="utilisateurs-admin">
+  <app-header-admin></app-header-admin>
+
+  <main class="main-content">
+    <!-- En-tête holographique -->
+    <section class="page-header">
+      <div class="page-title-section">
+        <div class="page-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="page-info">
+          <h1 class="page-title">Gestion des Utilisateurs</h1>
+          <p class="page-description">Interface de gestion avancée des utilisateurs par rôle</p>
+        </div>
+      </div>
+
+      <!-- Filtres futuristes -->
+      <div class="search-filters">
+        <div class="search-input-container">
+          <input 
+            type="text" 
+            class="search-input" 
+            [(ngModel)]="searchTerm"
+            placeholder="Rechercher un utilisateur..."
+          >
+        </div>
+        
+        <div class="filter-group">
+          <select [(ngModel)]="selectedService">
+            <option value="tous">Tous les services</option>
+            <option *ngFor="let service of services" [value]="service">{{service}}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <select [(ngModel)]="selectedStatut">
+            <option value="tous">Tous les statuts</option>
+            <option *ngFor="let statut of statuts" [value]="statut">{{statut}}</option>
+          </select>
+        </div>
+
+        <button class="btn btn-secondary" (click)="onReset()">
+          <i class="fas fa-sync-alt"></i> Réinitialiser
+        </button>
+
+                <!-- Remplace le bouton Ajouter par un menu déroulant -->
+        <div class="btn-group">
+          <button class="btn btn-primary" (click)="openAddForm('DEMANDEUR')">
+            <i class="fas fa-plus"></i> Ajouter Demandeur
+          </button>
+          <button class="btn btn-primary" (click)="openAddForm('TECHNICIEN')">
+            <i class="fas fa-plus"></i> Ajouter Technicien
+          </button>
+          <button class="btn btn-primary" (click)="openAddForm('RESPONSABLE')">
+            <i class="fas fa-plus"></i> Ajouter Responsable
+          </button>
+        </div>
+      </div>
+    </section>
+<!-- Formulaire d'ajout -->
+<div *ngIf="showAddForm" class="add-user-form">
+  <h2>Ajouter {{ newUserType | lowercase }}</h2>
+  <form (ngSubmit)="onAddUser()" #addUserForm="ngForm">
+    <input type="text" placeholder="Nom" [(ngModel)]="newUser.nom" name="nom" required>
+    <input type="text" placeholder="Prénom" [(ngModel)]="newUser.prenom" name="prenom" required>
+    <input type="text" placeholder="Matricule" [(ngModel)]="newUser.matricule" name="matricule" required>
+    <input type="email" placeholder="Email" [(ngModel)]="newUser.email" name="email" required>
+    <input type="password" placeholder="Mot de passe" [(ngModel)]="newUser.motDePasse" name="motDePasse" required>
+
+    <input type="text" placeholder="Téléphone" [(ngModel)]="newUser.telephone" name="telephone" required>
+    <!-- Champs spécifiques selon le type -->
+    <ng-container *ngIf="newUserType === 'DEMANDEUR'">
+      <input type="text" placeholder="Département" [(ngModel)]="newUser.departement" name="departement" required>
+    </ng-container>
+    <ng-container *ngIf="newUserType === 'TECHNICIEN'">
+      <input type="number" placeholder="Niveau" [(ngModel)]="newUser.niveau" name="niveau" required>
+    </ng-container>
+    <ng-container *ngIf="newUserType === 'RESPONSABLE'">
+      <input type="text" placeholder="Type Service" [(ngModel)]="newUser.typeService" name="typeService" required>
+    </ng-container>
+    <button type="submit" class="btn btn-success">Valider</button>
+    <button type="button" class="btn btn-secondary" (click)="closeAddForm()">Annuler</button>
+  </form>
+</div>
+
+<!-- Formulaire de modification -->
+<div *ngIf="showEditForm" class="edit-user-form add-user-form">
+  <h2>Modifier {{ editUser?.type?.toLowerCase() }}</h2>
+  <form (ngSubmit)="onUpdateUser()" #editUserForm="ngForm">
+    <input type="text" placeholder="Nom" [(ngModel)]="editUser.nom" name="editNom" required>
+    <input type="text" placeholder="Prénom" [(ngModel)]="editUser.prenom" name="editPrenom" required>
+    <input type="text" placeholder="Matricule" [(ngModel)]="editUser.matricule" name="editMatricule" required>
+    <input type="email" placeholder="Email" [(ngModel)]="editUser.email" name="editEmail" required>
+    <input type="text" placeholder="Téléphone" [(ngModel)]="editUser.telephone" name="editTelephone" required>
+    
+
+    <ng-container *ngIf="editUser.type === 'DEMANDEUR'">
+      <input type="text" placeholder="Département" [(ngModel)]="editUser.departement" name="editDepartement" required>
+    </ng-container>
+    <ng-container *ngIf="editUser.type === 'TECHNICIEN'">
+      <input type="number" placeholder="Niveau" [(ngModel)]="editUser.niveau" name="editNiveau" required>
+    </ng-container>
+    <ng-container *ngIf="editUser.type === 'RESPONSABLE'">
+      <input type="text" placeholder="Type Service" [(ngModel)]="editUser.typeService" name="editTypeService" required>
+    </ng-container>
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <button type="button" class="btn btn-secondary" (click)="closeEditForm()">Annuler</button>
+  </form>
+</div>
+    <!-- Onglets holographiques -->
+    <div class="user-tabs">
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'demandeurs'"
+        (click)="activeTab = 'demandeurs'"
+      >
+        <i class="fas fa-user-tie"></i> Demandeurs
+        <span class="badge">{{demandeurs.length}}</span>
+      </button>
+      
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'techniciens'"
+        (click)="activeTab = 'techniciens'"
+      >
+        <i class="fas fa-tools"></i> Techniciens
+        <span class="badge">{{techniciens.length}}</span>
+      </button>
+      
+      <button 
+        class="tab" 
+        [class.active]="activeTab === 'responsables'"
+        (click)="activeTab = 'responsables'"
+      >
+        <i class="fas fa-user-shield"></i> Responsables
+        <span class="badge">{{responsables.length}}</span>
+      </button>
+    </div>
+
+    <!-- Cartes utilisateurs en 3D -->
+    <div class="user-cards">
+      <!-- Demandeur Cards -->
+      <div 
+        *ngIf="activeTab === 'demandeurs'"
+        class="animate__animated animate__fadeIn"
+      >
+        <div 
+          *ngFor="let user of demandeurs" 
+          class="user-card"
+          [class.inactive]="user.statut === 'INACTIF'"
+        >
+          <div class="user-header">
+            <div class="user-avatar">
+              {{getUserInitials(user)}}
+            </div>
+            <div class="user-info">
+              <h3>{{user.nomComplet}}</h3>
+              <p class="user-email">{{user.email}}</p>
+            </div>
+            <div class="user-status">
+              <span class="status-badge" [ngClass]="user.statut.toLowerCase()">
+                {{user.statut}}
+              </span>
+            </div>
+          </div>
+          
+          <div class="user-details">
+            <div class="detail-item">
+    <div class="label">Matricule</div>
+    <div class="value">{{user.matricule}}</div>
+  </div>
+  <div class="detail-item">
+    <div class="label">Téléphone</div>
+    <div class="value">{{user.telephone}}</div>
+  </div>
+            <div class="detail-item">
+              <div class="label">Service</div>
+              <div class="value">{{user.service}}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Date création</div>
+              <div class="value">{{user.dateCreation}}</div>
+            </div>
+          </div>
+          
+          <div class="user-actions">
+            <button class="action-btn edit" (click)="onModifyUser(user)">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+            <button 
+              class="action-btn delete" 
+              (click)="toggleUserStatus(user)"
+            >
+              <i [class]="user.statut === 'ACTIF' ? 'fas fa-user-slash' : 'fas fa-user-check'"></i>
+              {{user.statut === 'ACTIF' ? 'Désactiver' : 'Activer'}}
+            </button>
+                        <button 
+              class="action-btn delete"
+              (click)="onDeleteUser(user)"
+              style="background: #e53935; color: #fff;"
+            >
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technicien Cards -->
+      <div 
+        *ngIf="activeTab === 'techniciens'"
+        class="animate__animated animate__fadeIn"
+      >
+        <div 
+          *ngFor="let user of techniciens" 
+          class="user-card tech-card"
+          [class.inactive]="user.statut === 'INACTIF'"
+        >
+          <div class="user-header">
+            <div class="user-avatar">
+              {{getUserInitials(user)}}
+            </div>
+            <div class="user-info">
+              <h3>{{user.nomComplet}}</h3>
+              <p class="user-email">{{user.email}}</p>
+              <span class="tech-level" [ngClass]="'level-' + user.niveau">
+                Niveau {{user.niveau}}
+              </span>
+            </div>
+            <div class="user-status">
+              <span class="status-badge" [ngClass]="user.statut.toLowerCase()">
+                {{user.statut}}
+              </span>
+            </div>
+          </div>
+          
+         
+         <div class="user-details">
+           <div class="detail-item">
+    <div class="label">Matricule</div>
+    <div class="value">{{user.matricule}}</div>
+  </div>
+  <div class="detail-item">
+    <div class="label">Téléphone</div>
+    <div class="value">{{user.telephone}}</div>
+  </div>
+            <div class="detail-item">
+              <div class="label">Date création</div>
+              <div class="value">{{user.dateCreation}}</div>
+            </div>
+          </div>
+        
+          
+         <div class="user-actions">
+            <button class="action-btn edit" (click)="onModifyUser(user)">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+            <button 
+              class="action-btn delete" 
+              (click)="toggleUserStatus(user)"
+            >
+              <i [class]="user.statut === 'ACTIF' ? 'fas fa-user-slash' : 'fas fa-user-check'"></i>
+              {{user.statut === 'ACTIF' ? 'Désactiver' : 'Activer'}}
+            </button>
+                        <button 
+              class="action-btn delete"
+              (click)="onDeleteUser(user)"
+              style="background: #e53935; color: #fff;"
+            >
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsable Cards -->
+      <div 
+        *ngIf="activeTab === 'responsables'"
+        class="animate__animated animate__fadeIn"
+      >
+        <div 
+          *ngFor="let user of responsables" 
+          class="user-card admin-card"
+        >
+          <div class="admin-badge">
+            <i class="fas fa-star"></i>
+          </div>
+          
+          <div class="user-header">
+            <div class="user-avatar">
+              {{getUserInitials(user)}}
+            </div>
+            <div class="user-info">
+              <h3>{{user.nomComplet}}</h3>
+              <p class="user-email">{{user.email}}</p>
+            </div>
+            <div class="user-status">
+              <span class="status-badge active">
+                {{user.statut}}
+              </span>
+            </div>
+          </div>
+          
+          <div class="user-details">
+            <div class="detail-item">
+    <div class="label">Matricule</div>
+    <div class="value">{{user.matricule}}</div>
+  </div>
+  <div class="detail-item">
+    <div class="label">Téléphone</div>
+    <div class="value">{{user.telephone}}</div>
+  </div>
+            <div class="detail-item">
+              <div class="label">Service</div>
+              <div class="value">{{user.typeService}}</div>
+            </div>
+            <div class="detail-item">
+              <div class="label">Date création</div>
+              <div class="value">{{user.dateCreation}}</div>
+            </div>
+          </div>
+            
+        
+          
+          <div class="user-actions">
+            <button class="action-btn edit" (click)="onModifyUser(user)">
+              <i class="fas fa-edit"></i> Modifier
+            </button>
+            <button 
+              class="action-btn delete" 
+              (click)="toggleUserStatus(user)"
+            >
+              <i [class]="user.statut === 'ACTIF' ? 'fas fa-user-slash' : 'fas fa-user-check'"></i>
+              {{user.statut === 'ACTIF' ? 'Désactiver' : 'Activer'}}
+            </button>
+                        <button 
+              class="action-btn delete"
+              (click)="onDeleteUser(user)"
+              style="background: #e53935; color: #fff;"
+            >
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Bouton flottant futuriste -->
+    <button class="fab" (click)="quickAddUser()">
+      <i class="fas fa-plus"></i>
+    </button>
+  </main>
+</div>

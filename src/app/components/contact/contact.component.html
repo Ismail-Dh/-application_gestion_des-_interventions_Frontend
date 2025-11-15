@@ -1,0 +1,131 @@
+<div class="quantum-contact">
+  <!-- Effet de vortex cosmique -->
+  <div class="cosmic-vortex">
+    <div class="vortex-layer" *ngFor="let layer of vortexLayers"></div>
+  </div>
+
+  
+
+  <!-- Conteneur principal -->
+  <div class="quantum-container">
+    <!-- En-tête avec effet de décomposition numérique -->
+    <div class="quantum-header">
+      <div class="header-content">
+        <!-- Logo OCP mini -->
+        <img src="assets/ocp.png" alt="OCP" class="mini-logo">
+        
+        <h1 class="glitch-title">
+          <span class="glitch-text" data-text="CONTACT OCP">CONTACT OCP</span>
+          <span class="glitch-effect">CONTACT OCP</span>
+        </h1>
+      </div>
+      <p class="quantum-subtitle">Connectez-vous à l'innovation industrielle</p>
+      <div class="scan-line"></div>
+    </div>
+
+    <!-- Grille de contact -->
+    <div class="quantum-grid">
+      <!-- Formulaire futuriste -->
+      <form class="quantum-form" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+        <!-- Champ Nom -->
+        <div class="neuro-input" [class.focused]="nameFocused">
+          <div class="input-icon">
+            <i class="fas fa-user-astronaut"></i>
+          </div>
+          <input type="text" formControlName="name" 
+                 (focus)="activateHologram(); nameFocused = true"
+                 (blur)="nameFocused = false"
+                 placeholder="IDENTITÉ">
+          <div class="neuro-underline"></div>
+          <div class="binary-stream">0101010101010101</div>
+        </div>
+
+        <!-- Champ Email -->
+        <div class="neuro-input" [class.focused]="emailFocused">
+          <div class="input-icon">
+            <i class="fas fa-at"></i>
+          </div>
+          <input type="email" formControlName="email"
+                 (focus)="emailFocused = true"
+                 (blur)="emailFocused = false"
+                 placeholder="TRANSMISSION QUANTIQUE">
+          <div class="neuro-underline"></div>
+          <div class="particle-trail"></div>
+        </div>
+
+        <!-- Champ Message -->
+        <div class="neuro-input textarea-input" [class.focused]="messageFocused">
+          <div class="input-icon">
+            <i class="fas fa-comment-dots"></i>
+          </div>
+          <textarea formControlName="message"
+                    (focus)="messageFocused = true"
+                    (blur)="messageFocused = false"
+                    placeholder="MESSAGE ENCRYPTÉ"></textarea>
+          <div class="neuro-underline"></div>
+          <div class="cypher-animation"></div>
+        </div>
+
+        <!-- Bouton d'envoi quantique -->
+        <button type="submit" class="quantum-btn" [disabled]="isSubmitting">
+          <span class="btn-text">
+            {{ isSubmitting ? 'TRANSMISSION EN COURS...' : 'ÉMETTRE' }}
+          </span>
+          <div class="btn-core"></div>
+          <div class="quantum-ripple"></div>
+        </button>
+      </form>
+
+      <!-- Informations de contact holographiques -->
+      <div class="holographic-info">
+        <!-- Carte Adresse -->
+        <div class="info-card" (mouseenter)="activateCard(1)">
+          <div class="card-icon">
+            <i class="fas fa-map-marked-alt"></i>
+            <div class="icon-pulse"></div>
+          </div>
+          <h3 class="card-title">COORDONNÉES</h3>
+          <p class="card-text">Plateau Industriel OCP<br>Casablanca, Maroc</p>
+          <div class="card-aura"></div>
+        </div>
+
+        <!-- Carte Téléphone -->
+        <div class="info-card" (mouseenter)="activateCard(2)">
+          <div class="card-icon">
+            <i class="fas fa-satellite-dish"></i>
+            <div class="icon-pulse"></div>
+          </div>
+          <h3 class="card-title">COM-LINK</h3>
+          <p class="card-text">+212 522 000 000<br>+212 600 000 000</p>
+          <div class="card-aura"></div>
+        </div>
+
+        <!-- Carte Email -->
+        <div class="info-card" (mouseenter)="activateCard(3)">
+          <div class="card-icon">
+            <i class="fas fa-envelope"></i>
+            <div class="icon-pulse"></div>
+          </div>
+          <h3 class="card-title">MESSAGERIE</h3>
+          <p class="card-text">contactbuild.ma<br>support.ma</p>
+          <div class="card-aura"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation holographique -->
+  <div class="quantum-confirmation" *ngIf="showConfirmation">
+    <div class="confirmation-hologram">
+      <div class="hologram-content">
+        <i class="fas fa-check-circle"></i>
+        <h3>TRANSMISSION RÉUSSIE</h3>
+        <p>Votre message a été crypté et transmis à notre équipe</p>
+        <div class="confirmation-particles"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pluie de code binaire -->
+  <div class="binary-rain"></div>
+</div>

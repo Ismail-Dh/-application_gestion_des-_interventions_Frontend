@@ -1,0 +1,42 @@
+.intervention-detail-container {
+  max-width: 900px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  color: #333;
+
+  .section {
+    border: 1px solid #ccc;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    background-color: #f9f9f9;
+
+    h2 {
+      margin-bottom: 15px;
+      color: #1976d2;
+      border-bottom: 2px solid #1976d2;
+      padding-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .field {
+      display: flex;
+      margin-bottom: 12px;
+
+      label {
+        width: 180px;
+        font-weight: 600;
+      }
+
+      span, p {
+        flex: 1;
+        color: #555;
+        word-wrap: break-word;
+      }
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+}

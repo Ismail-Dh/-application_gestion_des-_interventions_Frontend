@@ -1,0 +1,381 @@
+/* Variables Futuristes */
+:root {
+  --quantum-blue: #00f0ff;
+  --cyber-purple: #db00ff;
+  --matrix-green: #00ff88;
+  --neon-yellow: #ffee00;
+  --cyber-dark: #266d31;
+}
+
+/* Base Styling */
+.quantum-login {
+  position: relative;
+  height: 100vh;
+  background: radial-gradient(ellipse at bottom, #0d3a23 0%, #1e5465 100%);
+  overflow: hidden;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tunnel Quantique 3D */
+.quantum-tunnel {
+  position: absolute;
+  width: 200vw;
+  height: 200vh;
+  animation: tunnel-spin 40s linear infinite;
+  
+  .tunnel-layer {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: 
+      repeating-linear-gradient(90deg, 
+        transparent, 
+        transparent 50px, 
+        rgba(0, 240, 255, 0.1) 50px, 
+        rgba(0, 240, 255, 0.1) 100px);
+    transform-style: preserve-3d;
+    
+    @for $i from 1 through 5 {
+      &:nth-child(#{$i}) {
+        transform: rotateX(75deg) translateZ($i * 100px);
+        opacity: 1 - ($i * 0.15);
+      }
+    }
+  }
+}
+/* Logo OCP dans un cercle */
+.ocp-logo-circle {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  z-index: 2;
+
+  .logo-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(33, 66, 51, 0.7);
+    border: 2px solid var(--quantum-blue);
+    box-shadow: 
+      0 0 20px rgba(0, 240, 255, 0.5),
+      inset 0 0 15px rgba(0, 240, 255, 0.3);
+    overflow: hidden;
+  }
+
+  .logo-image {
+    width: 70%;
+    height: auto;
+    filter: drop-shadow(0 0 5px var(--quantum-blue));
+    animation: logo-float 3s ease-in-out infinite alternate;
+  }
+
+  .circle-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--quantum-blue) 0%, transparent 70%);
+    opacity: 0;
+    animation: pulse 4s infinite;
+  }
+
+  .circle-glow {
+    position: absolute;
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    border-radius: 50%;
+    border: 1px solid var(--quantum-blue);
+    box-shadow: 0 0 15px var(--quantum-blue);
+    opacity: 0.7;
+  }
+}
+
+
+
+.card-header {
+  text-align: center; /* Centrer le contenu */
+}
+.cyber-title {
+  margin: 0.5rem 0; /* Ajuster les marges */
+  font-size: 1.5rem; /* Ajuster la taille du texte */
+}
+
+/* Animations */
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-10px) scale(1.05); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  70% { transform: scale(1.1); opacity: 0.2; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+/* Hologramme OCP */
+.ocp-hologram {
+  position: absolute;
+  width: 30vmin;
+  height: 30vmin;
+  transition: all 0.5s ease;
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+  
+  &.active {
+    filter: drop-shadow(0 0 30px var(--quantum-blue));
+    
+    .hologram-pulse {
+      animation: hologram-pulse 2s infinite;
+    }
+  }
+  
+  .hologram-logo {
+    width: 100%;
+    animation: hologram-float 8s ease-in-out infinite;
+  }
+  
+  .hologram-grid {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+      linear-gradient(rgba(9, 223, 238, 0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .hologram-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--quantum-blue) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+  }
+}
+
+/* Carte Cyberpunk */
+.cyber-card {
+  position: relative;
+  width: 90%;
+  max-width: 450px;
+  background: rgba(51, 181, 135, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 2.5rem;
+  border: 1px solid var(--quantum-blue);
+  box-shadow: 
+    0 0 30px rgba(0, 240, 255, 0.3),
+    inset 0 0 20px rgba(0, 255, 157, 0.2);
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* Inputs Neuronaux */
+.neuro-input {
+  position: relative;
+  margin: 2rem 0;
+  margin: 1.2rem 0;
+  
+  &.active {
+    .input-underline {
+      transform: scaleX(1);
+      background: linear-gradient(90deg, var(--quantum-blue), var(--matrix-green));
+    }
+    
+    .binary-stream::before {
+      animation: binary-flow 2s linear infinite;
+    }
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.5rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+    color: white;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    
+    &:focus {
+      outline: none;
+      + .input-underline {
+        transform: scaleX(1);
+      }
+    }
+    
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 2px;
+    }
+  }
+  
+  .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--quantum-blue);
+    font-size: 1.2rem;
+  }
+  
+  .input-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--quantum-blue);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  
+  .binary-stream {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    overflow: hidden;
+    
+    &::before {
+      content: "0101010101010101010101010101010101010101010101010101010101010101";
+      position: absolute;
+      width: 200%;
+      color: var(--matrix-green);
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Bouton Quantique */
+.quantum-btn {
+  position: relative;
+  width: 100%;
+  padding: 1.2rem;
+  margin: 2.5rem 0 1rem;
+  background: transparent;
+  border: 1px solid var(--quantum-blue);
+  color: white;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1;
+  
+  &:hover {
+    text-shadow: 0 0 10px white;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    
+    .btn-core {
+      opacity: 0.3;
+      animation: core-pulse 1.5s infinite;
+    }
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .btn-core {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, var(--quantum-blue) 0%, transparent 70%);
+    opacity: 0;
+    z-index: -1;
+  }
+  
+  .btn-ripple {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    top: 0;
+    left: -100%;
+    transition: all 0.7s ease;
+  }
+  
+  &:hover .btn-ripple {
+    left: 100%;
+  }
+}
+.forgot-password {
+  text-align: right;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+
+  a {
+    color: var(--quantum-blue);
+    font-size: 0.85rem;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      text-shadow: 0 0 5px var(--quantum-blue);
+    }
+  }
+}
+
+
+/* Animations */
+@keyframes tunnel-spin {
+  from { transform: rotateX(75deg) rotateZ(0deg); }
+  to { transform: rotateX(75deg) rotateZ(360deg); }
+}
+
+@keyframes hologram-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes hologram-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes binary-flow {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes core-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+}
+
+/* Pluie Cyberpunk */
+.cyber-rain {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: 
+    linear-gradient(transparent 95%, rgba(0, 240, 255, 0.1) 95%),
+    linear-gradient(90deg, transparent 95%, rgba(219, 0, 255, 0.1) 95%);
+  background-size: 3px 30px, 30px 3px;
+  animation: rain-fall 0.8s linear infinite;
+}
+
+@keyframes rain-fall {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 0 30px, 30px 0; }
+}

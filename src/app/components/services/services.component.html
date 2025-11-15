@@ -1,0 +1,249 @@
+<section class="services-page">
+    <!-- Header avec animation de fond -->
+    <header class="services-header">
+      <div class="header-content">
+        <h1>Nos Services d'Intervention</h1>
+        <p>Optimisez la gestion de vos interventions techniques avec notre solution complète et intuitive</p>
+      </div>
+      <div class="floating-shapes">
+        <div class="shape circle"></div>
+        <div class="shape triangle"></div>
+        <div class="shape square"></div>
+      </div>
+    </header>
+  
+    <!-- Services Grid -->
+    <div class="services-container">
+      <div class="services-grid">
+        <!-- Carte 1 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon-container">
+              <i class="fas fa-ticket-alt service-icon"></i>
+            </div>
+            <h2>Gestion des Demandes</h2>
+          </div>
+          <div class="service-card-body">
+            <h3>Suivi complet des interventions</h3>
+            <ul>
+              <li><i class="fas fa-check"></i> Création de demandes d'intervention</li>
+              <li><i class="fas fa-check"></i> Attribution aux techniciens</li>
+              <li><i class="fas fa-check"></i> Suivi en temps réel de l'avancement</li>
+              <li><i class="fas fa-check"></i> Notifications automatiques</li>
+              <li><i class="fas fa-check"></i> Système de priorisation</li>
+            </ul>
+            <div class="card-footer">
+              <span class="learn-more">En savoir plus <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Carte 2 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon-container">
+              <i class="fas fa-calendar-alt service-icon"></i>
+            </div>
+            <h2>Planification</h2>
+          </div>
+          <div class="service-card-body">
+            <h3>Optimisation des ressources</h3>
+            <ul>
+              <li><i class="fas fa-check"></i> Calendrier des interventions</li>
+              <li><i class="fas fa-check"></i> Vues journalière/mensuelle</li>
+              <li><i class="fas fa-check"></i> Gestion des conflits</li>
+              <li><i class="fas fa-check"></i> Assignation intelligente</li>
+              <li><i class="fas fa-check"></i> Intégration calendriers</li>
+            </ul>
+            <div class="card-footer">
+              <span class="learn-more">En savoir plus <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Carte 3 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon-container">
+              <i class="fas fa-clipboard-check service-icon"></i>
+            </div>
+            <h2>Fiches d'Intervention</h2>
+          </div>
+          <div class="service-card-body">
+            <h3>Documentation complète</h3>
+            <ul>
+              <li><i class="fas fa-check"></i> Génération automatique</li>
+              <li><i class="fas fa-check"></i> Historique détaillé</li>
+              <li><i class="fas fa-check"></i> Suivi du temps passé</li>
+              <li><i class="fas fa-check"></i> Ressources utilisées</li>
+              <li><i class="fas fa-check"></i> Validation par le demandeur</li>
+            </ul>
+            <div class="card-footer">
+              <span class="learn-more">En savoir plus <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Carte 4 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon-container">
+              <i class="fas fa-server service-icon"></i>
+            </div>
+            <h2>Gestion d'Inventaire</h2>
+          </div>
+          <div class="service-card-body">
+            <h3>Suivi des équipements</h3>
+            <ul>
+              <li><i class="fas fa-check"></i> Référencement complet</li>
+              <li><i class="fas fa-check"></i> Historique des interventions</li>
+              <li><i class="fas fa-check"></i> Alertes de maintenance</li>
+              <li><i class="fas fa-check"></i> Équipements critiques</li>
+              <li><i class="fas fa-check"></i> Export des données</li>
+            </ul>
+            <div class="card-footer">
+              <span class="learn-more">En savoir plus <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Carte 5 -->
+        <div class="service-card">
+          <div class="service-card-header">
+            <div class="service-icon-container">
+              <i class="fas fa-chart-bar service-icon"></i>
+            </div>
+            <h2>Tableaux de Bord</h2>
+          </div>
+          <div class="service-card-body">
+            <h3>Analyse des performances</h3>
+            <ul>
+              <li><i class="fas fa-check"></i> Indicateurs clés (KPI)</li>
+              <li><i class="fas fa-check"></i> Statistiques par service</li>
+              <li><i class="fas fa-check"></i> Export Excel/PDF</li>
+              <li><i class="fas fa-check"></i> Tableaux personnalisables</li>
+              <li><i class="fas fa-check"></i> Analyse des tendances</li>
+            </ul>
+            <div class="card-footer">
+              <span class="learn-more">En savoir plus <i class="fas fa-arrow-right"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Section Chatbot -->
+      <!-- Section Chatbot Innovante -->
+     <!-- Section Chatbot Innovante -->
+<!-- Section Chatbot Next-Gen -->
+<!-- Section Chatbot Next-Gen Ultra -->
+
+
+<!-- Script pour animations supplémentaires -->
+<script>
+// Animation des statistiques
+document.querySelectorAll('.stat-value').forEach(stat => {
+  const target = +stat.getAttribute('data-count');
+  const speed = 2000;
+  const increment = target / (speed / 16);
+  let current = 0;
+  
+  const updateStat = () => {
+    current += increment;
+    if (current < target) {
+      stat.textContent = target % 1 === 0 ? Math.floor(current) : current.toFixed(2);
+      requestAnimationFrame(updateStat);
+    } else {
+      stat.textContent = target;
+    }
+  };
+  
+  setTimeout(updateStat, 500);
+});
+
+// Création du réseau neuronal dynamique
+const neuralNetwork = document.getElementById('neuralNetwork');
+if (neuralNetwork) {
+  for (let i = 0; i < 20; i++) {
+    const path = document.createElement('div');
+    path.className = 'neural-path';
+    path.style.width = `${Math.random() * 100 + 50}px`;
+    path.style.height = '1px';
+    path.style.transform = `rotate(${Math.random() * 360}deg)`;
+    path.style.left = `${Math.random() * 100}%`;
+    path.style.top = `${Math.random() * 100}%`;
+    path.style.animationDelay = `${Math.random() * 3}s`;
+    neuralNetwork.appendChild(path);
+  }
+  
+  for (let i = 0; i < 15; i++) {
+    const node = document.createElement('div');
+    node.className = 'neural-node';
+    node.style.left = `${Math.random() * 100}%`;
+    node.style.top = `${Math.random() * 100}%`;
+    node.style.animationDelay = `${Math.random() * 3}s`;
+    neuralNetwork.appendChild(node);
+  }
+}
+
+// Création de particules dynamiques
+const particlesContainer = document.getElementById('particles');
+if (particlesContainer) {
+  for (let i = 0; i < 30; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.width = `${Math.random() * 6 + 2}px`;
+    particle.style.height = particle.style.width;
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.animationDuration = `${Math.random() * 5 + 3}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    particlesContainer.appendChild(particle);
+  }
+}
+</script>
+<!--statique  -->
+      <div class="stats-section">
+        <div class="section-title">
+          <h2 data-text="Notre Impact">Notre Impact</h2>
+          <p class="section-subtitle">Chiffres clés de performance</p>
+        </div>
+        
+        <div class="stats-grid">
+          <!-- Carte 1 - Effet Parallaxe -->
+          <div class="stat-item" data-tilt data-tilt-scale="1.05">
+            <div class="stat-3d-container">
+              <div class="stat-hologram" data-value="95"></div>
+              <div class="stat-icon pulse"><i class="fas fa-tasks"></i></div>
+            </div>
+            <div class="stat-number glitch" data-text="95%">95%</div>
+            <div class="stat-label">Demandes traitées</div>
+            <div class="stat-aura"></div>
+          </div>
+          
+          <!-- Carte 2 - Animation Fluide -->
+          <div class="stat-item liquid-card">
+            <div class="stat-liquid" data-value="40"></div>
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-number">40%</div>
+            <div class="stat-label">Gain de temps</div>
+          </div>
+          
+          <!-- Carte 3 - Réalité Augmentée -->
+          <div class="stat-item ar-card">
+            <div class="stat-ar-overlay"></div>
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-number">99%</div>
+            <div class="stat-label">Disponibilité</div>
+            <canvas class="stat-particles"></canvas>
+          </div>
+          
+          <!-- Carte 4 - Effet Néon -->
+          <div class="stat-item neon-card">
+            <div class="stat-neon-bar" data-value="96"></div>
+            <div class="stat-icon"><i class="fas fa-smile"></i></div>
+            <div class="stat-number">4.8/5</div>
+            <div class="stat-label">Satisfaction</div>
+            <div class="neon-glow"></div>
+          </div>
+        </div>
+      </div>

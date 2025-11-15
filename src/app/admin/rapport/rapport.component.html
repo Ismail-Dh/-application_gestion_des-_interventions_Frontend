@@ -1,0 +1,71 @@
+<div class="interventions-container">
+<app-header-admin></app-header-admin>
+  
+    <main class="main-content">
+      <!-- En-tête avec Filtres -->
+      <section class="page-header">
+        <div class="page-title-section">
+          <div class="page-icon">
+            <mat-icon>construction</mat-icon>
+          </div>
+          <div class="page-info">
+            <h1 class="page-title">Gestion des fiches d'Interventions</h1>
+          </div>
+        </div>
+
+        <!-- Filtres améliorés alignés -->
+       
+      </section>
+  
+      <!-- Grille des interventions -->
+      <div class="interventions-grid">
+        <div class="intervention-card" *ngFor="let intervention of filteredInterventions">
+          <div class="intervention-header">
+            <div class="intervention-ref">
+              <h3>{{intervention.Demande.titre}}</h3>
+              <p class="intervention-date">{{formatDate(intervention.dateIntervention)}}</p>
+            </div>
+            <div class="priority-indicator" 
+                 [class.high]="intervention.Demande.priorite === 'ELEVEE'"
+                 [class.medium]="intervention.Demande.priorite === 'MOYENNE'"
+                 [class.low]="intervention.Demande.priorite === 'BASSE'">
+              {{getPriorityLabel(intervention.Demande.priorite)}}
+            </div>
+          </div>
+  
+          <div class="intervention-content">
+            <p class="intervention-description">{{truncateText(intervention.Demande.description, 100)}}</p>
+            
+            <div class="technicien-info">
+              <h5>Technicien :</h5>
+              <div class="technicien-avatar">
+                {{ getInitials( intervention.Technicien.nom  +" "+ intervention.Technicien.prenom ) }}
+              </div>
+              <div class="technicien-details">
+                <span class="technicien-name">{{ intervention.Technicien.nom }} {{ intervention.Technicien.prenom }}</span>
+                
+              </div>
+            </div>
+          </div>
+  
+          <div class="intervention-footer">
+            <span class="status-badge" 
+                  [class.planned]="intervention.statut === 'PLANIFIEE'"
+                  [class.in-progress]="intervention.statut === 'EN_COURS'"
+                  [class.completed]="intervention.statut === 'TERMINEE'"
+                  [class.cancelled]="intervention.statut === 'ESCALADEE'">
+              {{getStatusLabel(intervention.statut)}}
+            </span>
+            
+            <div class="intervention-actions">
+  <button class="action-btn pdf" (click)="generatePDF(intervention)">
+    <mat-icon>picture_as_pdf</mat-icon>
+  </button>
+</div>
+
+          </div>
+        </div>
+      </div>
+
+    </main>
+</div>
